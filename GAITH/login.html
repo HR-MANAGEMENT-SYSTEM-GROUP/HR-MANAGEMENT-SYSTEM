@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registration & Sign In — Bridgeway HR Management System</title>
+  <meta name="description"
+    content="Secure role-based portal login and registration for Bridgeway HR Management System." />
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter (Project Standard) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Bootstrap 5.3.2 CSS & Bootstrap Icons (Project Standard) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <!-- Scoped Physics ID Badge Stylesheet -->
+  <link rel="stylesheet" href="login.css" />
+
+  <!-- Presentation-Only Physics Badge Engine (Deferred) -->
+  <script src="login.js" defer></script>
+</head>
+
+<body>
+
+  <!-- ========================================================================
+       LOGIN / REGISTRATION PAGE SCOPED WRAPPER (.login-page)
+       ======================================================================== -->
+  <div class="login-page">
+    <div class="lb-ambience" aria-hidden="true"></div>
+
+    <div class="lb-container">
+
+      <!-- ====================================================================
+           LEFT SIDE: HANGING PHYSICS ID BADGE ON LANYARD (~55% on ≥1024px)
+           Exact same background, lighting, and animation intact
+           ==================================================================== -->
+      <section class="lb-badge-panel" aria-label="Interactive Employee ID Badge Visual">
+
+        <!-- Header Brand -->
+        <header class="lb-panel-brand">
+          <a href="login.html" class="d-flex align-items-center gap-2 text-decoration-none">
+            <div class="lb-brand-icon" aria-hidden="true">
+              <i class="bi bi-diagram-3-fill"></i>
+            </div>
+            <div class="lb-brand-title">
+              Bridgeway<span class="lb-brand-accent">.hr</span>
+            </div>
+          </a>
+        </header>
+
+        <!-- Faint Low-Contrast HR Elements (Positioned away from badge) -->
+        <div class="lb-deco-item lb-deco-1" aria-hidden="true">
+          <div class="lb-deco-icon"><i class="bi bi-diagram-3"></i></div>
+          <div class="lb-deco-text">
+            <span class="lb-deco-title">Org Directory</span>
+            <span class="lb-deco-desc">Workforce Structure</span>
+          </div>
+        </div>
+
+        <div class="lb-deco-item lb-deco-2" aria-hidden="true">
+          <div class="lb-deco-icon"><i class="bi bi-shield-check"></i></div>
+          <div class="lb-deco-text">
+            <span class="lb-deco-title">Role-based access</span>
+            <span class="lb-deco-desc">Permissions Governed</span>
+          </div>
+        </div>
+
+        <div class="lb-deco-item lb-deco-3" aria-hidden="true">
+          <div class="lb-deco-icon"><i class="bi bi-check2-circle"></i></div>
+          <div class="lb-deco-text">
+            <span class="lb-deco-title">Onboarding Verification</span>
+            <span class="lb-deco-desc">Identity Provisioned</span>
+          </div>
+        </div>
+
+        <div class="lb-deco-item lb-deco-4" aria-hidden="true">
+          <div class="lb-deco-icon"><i class="bi bi-calendar2-check"></i></div>
+          <div class="lb-deco-text">
+            <span class="lb-deco-title">Shift & Leave Status</span>
+            <span class="lb-deco-desc">Balance Tracking</span>
+          </div>
+        </div>
+
+        <!-- Central Stage Area for Lanyard & Badge -->
+        <div class="lb-stage-area">
+
+          <!-- Dynamic SVG Lanyard Band -->
+          <svg class="lb-lanyard-svg" viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true">
+            <defs>
+              <linearGradient id="lanyardBandGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#1e3a8a" />
+                <stop offset="50%" stop-color="#2563eb" />
+                <stop offset="100%" stop-color="#1d4ed8" />
+              </linearGradient>
+              <linearGradient id="metalClipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f1f5f9" />
+                <stop offset="50%" stop-color="#cbd5e1" />
+                <stop offset="100%" stop-color="#94a3b8" />
+              </linearGradient>
+            </defs>
+
+            <!-- Left Lanyard Strap with Center Stitch Line -->
+            <path id="lanyardLeftStrap" d="M 152 0 Q 176 52 196 98" stroke="url(#lanyardBandGrad)" stroke-width="14"
+              stroke-linecap="round" fill="none" />
+            <path d="M 152 0 Q 176 52 196 98" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5"
+              stroke-dasharray="3 3" fill="none" />
+
+            <!-- Right Lanyard Strap with Center Stitch Line -->
+            <path id="lanyardRightStrap" d="M 248 0 Q 224 52 204 98" stroke="url(#lanyardBandGrad)" stroke-width="14"
+              stroke-linecap="round" fill="none" />
+            <path d="M 248 0 Q 224 52 204 98" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5"
+              stroke-dasharray="3 3" fill="none" />
+
+            <!-- Metal Swivel Clip Assembly -->
+            <g id="lanyardClip" transform="translate(200, 98)">
+              <ellipse cx="0" cy="0" rx="9" ry="6" fill="none" stroke="url(#metalClipGrad)" stroke-width="3" />
+              <rect x="-7" y="5" width="14" height="12" rx="2" fill="url(#metalClipGrad)" stroke="#64748b"
+                stroke-width="0.8" />
+              <rect x="-4" y="10" width="8" height="2" rx="1" fill="#475569" />
+              <path d="M -5 17 L -5 27 C -5 30, 5 30, 5 27 L 5 17 Z" fill="url(#metalClipGrad)" stroke="#64748b"
+                stroke-width="0.8" />
+              <circle cx="0" cy="23" r="2" fill="#334155" />
+            </g>
+          </svg>
+
+          <!-- Soft elliptical shadow element behind/under the badge -->
+          <div class="lb-badge-shadow" id="badgeShadow" aria-hidden="true"></div>
+
+          <!-- Physics Badge Assembly (Draggable, Swings from Pivot) -->
+          <div class="lb-badge-assembly" id="badgeAssembly" aria-hidden="true">
+            <!-- Tilt Wrapper (3D tilt: rotateX / rotateY) -->
+            <div class="lb-badge-tilt" id="badgeTilt">
+              <!-- Idle Sway Wrapper (CSS keyframe sway) -->
+              <div class="lb-badge-idle-sway">
+                <!-- Flip Element (#badgeCard: 3D flip on password focus) -->
+                <div class="lb-badge-card" id="badgeCard">
+
+                  <!-- Specular Sheen Layer -->
+                  <div class="lb-badge-sheen" aria-hidden="true"></div>
+                  <!-- Red Edge Error Overlay -->
+                  <div class="lb-badge-error-overlay" aria-hidden="true"></div>
+                  <!-- Subtle 3D Glare Layer -->
+                  <div class="lb-badge-glare" aria-hidden="true"></div>
+
+                  <!-- ================= BADGE FRONT FACE ================= -->
+                  <div class="lb-badge-face lb-badge-front">
+                    <div class="lb-badge-sweep" aria-hidden="true"></div>
+                    <div class="lb-badge-slot"></div>
+
+                    <div class="lb-card-brand lb-stagger-item lb-stagger-1">
+                      <i class="bi bi-diagram-3-fill"></i>
+                      <span>Bridgeway<span class="text-primary">.hr</span></span>
+                    </div>
+
+                    <div class="lb-avatar-wrap lb-stagger-item lb-stagger-2">
+                      <span class="lb-avatar-initials" id="badgeInitials">YN</span>
+                    </div>
+
+                    <div class="lb-name-line lb-stagger-item lb-stagger-3" id="badgeName">Your name</div>
+                    <div class="lb-role-line lb-stagger-item lb-stagger-4">Role assigned at sign-in</div>
+
+                    <div class="lb-front-details lb-stagger-item lb-stagger-5">
+                      <div class="lb-front-chip"></div>
+                      <span class="font-monospace fw-bold" style="letter-spacing: 0.05em;">#SEC-2026-ID</span>
+                      <i class="bi bi-shield-check text-primary fs-6"></i>
+                    </div>
+
+                    <div class="lb-front-stripe lb-stagger-item lb-stagger-5"></div>
+                  </div>
+
+                  <!-- ================= BADGE BACK FACE ================= -->
+                  <div class="lb-badge-face lb-badge-back">
+                    <div class="lb-badge-slot" style="background: #334155;"></div>
+
+                    <div class="lb-back-tag">
+                      <i class="bi bi-lock-fill"></i> Confidential
+                    </div>
+
+                    <!-- Centered Padlock Graphic (Shackle lifts when password shown) -->
+                    <div class="lb-padlock-stage">
+                      <svg class="lb-padlock-svg" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <linearGradient id="padlockBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#3b82f6" />
+                            <stop offset="100%" stop-color="#1e3a8a" />
+                          </linearGradient>
+                          <linearGradient id="shackleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#f8fafc" />
+                            <stop offset="50%" stop-color="#cbd5e1" />
+                            <stop offset="100%" stop-color="#94a3b8" />
+                          </linearGradient>
+                        </defs>
+
+                        <!-- Padlock Shackle -->
+                        <path id="padlockShackle" d="M 22 30 L 22 20 C 22 13, 48 13, 48 20 L 48 30"
+                          stroke="url(#shackleGrad)" stroke-width="5" stroke-linecap="round" fill="none" />
+                        <!-- Padlock Body -->
+                        <rect id="padlockBody" x="16" y="28" width="38" height="28" rx="6" fill="url(#padlockBodyGrad)"
+                          stroke="#60a5fa" stroke-width="1.2" />
+                        <!-- Keyhole -->
+                        <circle cx="35" cy="39" r="3" fill="#0f172a" />
+                        <path d="M 33.5 39 L 36.5 39 L 37.5 46 L 32.5 46 Z" fill="#0f172a" />
+                      </svg>
+                    </div>
+
+                    <div>
+                      <div class="lb-back-title">RESTRICTED</div>
+                      <div class="lb-back-desc">Human Resources Governance Identity Access Protocol</div>
+                    </div>
+
+                    <div class="lb-barcode-wrap">
+                      <div class="lb-barcode-lines">
+                        <div class="lb-bar-line" style="width: 2px;"></div>
+                        <div class="lb-bar-line" style="width: 1px;"></div>
+                        <div class="lb-bar-line" style="width: 3px;"></div>
+                        <div class="lb-bar-line" style="width: 1px;"></div>
+                        <div class="lb-bar-line" style="width: 4px;"></div>
+                        <div class="lb-bar-line" style="width: 2px;"></div>
+                        <div class="lb-bar-line" style="width: 1px;"></div>
+                        <div class="lb-bar-line" style="width: 3px;"></div>
+                        <div class="lb-bar-line" style="width: 2px;"></div>
+                        <div class="lb-bar-line" style="width: 4px;"></div>
+                        <div class="lb-bar-line" style="width: 1px;"></div>
+                        <div class="lb-bar-line" style="width: 2px;"></div>
+                        <div class="lb-bar-line" style="width: 3px;"></div>
+                        <div class="lb-bar-line" style="width: 1px;"></div>
+                        <div class="lb-bar-line" style="width: 2px;"></div>
+                        <div class="lb-bar-line" style="width: 4px;"></div>
+                        <div class="lb-bar-line" style="width: 1px;"></div>
+                        <div class="lb-bar-line" style="width: 2px;"></div>
+                        <div class="lb-bar-line" style="width: 3px;"></div>
+                        <div class="lb-bar-line" style="width: 1px;"></div>
+                        <div class="lb-bar-line" style="width: 2px;"></div>
+                        <div class="lb-bar-line" style="width: 1px;"></div>
+                      </div>
+                      <div class="lb-barcode-num">SEC-99281-AUTH</div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Panel Footer -->
+        <footer class="lb-panel-footer">
+          <span>Enterprise HR Security</span>
+          <span>Confidential Session</span>
+        </footer>
+
+      </section>
+
+      <!-- ====================================================================
+           RIGHT SIDE: LOGIN FORM PANEL (~45% on ≥1024px)
+           ==================================================================== -->
+      <section class="lb-form-panel" aria-label="Portal Form Panel">
+        <div class="lb-form-container">
+          <h1 class="lb-title">Sign In to Your Workspace</h1>
+          <p class="lb-subtitle">Select your role and enter your official credentials to access the portal.</p>
+
+          <!-- Segmented Role Selector Tabs -->
+          <div class="d-flex p-1 bg-light rounded-3 mx-auto mb-3 border lb-role-wrapper">
+            <button
+              class="btn btn-primary w-50 py-2 rounded-2 fw-medium shadow-sm d-flex align-items-center justify-content-center gap-1 lb-role-btn"
+              type="button" id="navEmployee" onclick="switchToEmployee()">
+              <i class="bi bi-person"></i> Employee
+            </button>
+            <button
+              class="btn btn-light w-50 py-2 rounded-2 fw-medium text-muted border-0 d-flex align-items-center justify-content-center gap-1 lb-role-btn bg-transparent"
+              type="button" id="navHR" onclick="switchToHR()">
+              <i class="bi bi-shield-check"></i> HR Admin
+            </button>
+          </div>
+
+          <!-- Highlighted Main Card -->
+          <div class="card shadow-sm border rounded-4 p-4 p-sm-5 mx-auto lb-auth-card">
+
+            <form id="hrLoginForm" novalidate>
+
+              <!-- Work Email Field (Live-syncs to Badge Name) -->
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control rounded-3 lb-form-control" id="loginEmail"
+                  placeholder="name@company.com" required>
+                <label for="loginEmail" class="text-muted">
+                  <i class="bi bi-envelope me-1"></i> Work email address
+                </label>
+                <div class="invalid-feedback" id="emailError" style="display: none;">Please enter a valid work email.
+                </div>
+              </div>
+
+              <!-- Password Field (Flips Badge to Back on focus) -->
+              <div class="form-floating mb-4 position-relative">
+                <input type="password" class="form-control rounded-3 pe-5 lb-form-control" id="loginPassword"
+                  placeholder="Password" required>
+                <label for="loginPassword" class="text-muted">
+                  <i class="bi bi-lock me-1"></i> Password
+                </label>
+                <!-- Toggle Button (Unlocks the 3D Padlock) -->
+                <button class="btn border-0 position-absolute top-50 end-0 translate-middle-y me-2 p-2 text-muted"
+                  type="button" id="togglePasswordBtn" aria-label="Toggle password visibility"
+                  style="background: none; z-index: 5;">
+                  <i class="bi bi-eye-slash" id="toggleIcon"></i>
+                </button>
+                <div class="invalid-feedback" id="passwordError" style="display: none;">Please enter your password.
+                </div>
+              </div>
+
+              <!-- Forgot Password Link -->
+              <div class="d-flex justify-content-end mb-3">
+                <a href="#" id="forgotPasswordLink" class="text-decoration-none small text-primary fw-medium"
+                  style="font-size: 0.82rem;">
+                  Forgot password?
+                </a>
+              </div>
+
+              <!-- Submit Button -->
+              <button
+                class="btn btn-primary w-100 py-2.5 rounded-3 fw-semibold shadow-sm d-flex align-items-center justify-content-center gap-2 lb-submit-btn"
+                type="submit" id="loginSubmitBtn">
+                <span>Sign In to Portal</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+
+            </form>
+
+            <!-- Security Footer Note -->
+            <div class="mt-4 pt-3 border-top text-center">
+              <span class="text-muted small d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                <i class="bi bi-shield-lock-fill text-primary"></i> 256-bit encrypted corporate session
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container-custom">
+      <div class="custom-toast" id="loginToast" style="display: none;" role="alert" aria-live="assertive">
+        <i class="bi bi-check-circle-fill text-success fs-5" id="toastIcon" aria-hidden="true"></i>
+        <span id="loginToastMsg">Notification message</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================================================
+       FORGOT / RESET PASSWORD MODAL
+       ======================================================================== -->
+  <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel"
+    aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 430px; margin: 1.75rem auto;">
+      <div class="modal-content rounded-4 border-0 shadow-lg p-3 bg-white">
+        <div class="modal-header border-0 pb-1 d-flex align-items-start">
+          <div class="d-flex align-items-center gap-2">
+            <div class="rounded-3 d-flex align-items-center justify-content-center shadow-sm"
+              style="width: 42px; height: 42px; background: #eff6ff; color: #2563eb;">
+              <i class="bi bi-shield-lock-fill fs-5"></i>
+            </div>
+            <div>
+              <h5 class="modal-title fw-bold text-dark fs-6 mb-0" id="forgotPasswordModalLabel">Reset Account Password
+              </h5>
+              <p class="text-muted small mb-0" id="resetModalSubtitle" style="font-size: 0.78rem;">Enter your work email
+                to reset your password.</p>
+            </div>
+          </div>
+          <button type="button" class="btn-close ms-auto shadow-none" id="closeForgotModalBtn" aria-label="Close"
+            style="font-size: 0.8rem;"></button>
+        </div>
+        <div class="modal-body pt-3 pb-2">
+          <form id="forgotPasswordForm" novalidate>
+            <!-- Email Input Field (Step 1) -->
+            <div class="form-floating mb-3" id="resetEmailGroup">
+              <input type="email" class="form-control rounded-3 lb-form-control" id="resetEmail"
+                placeholder="name@company.com" required>
+              <label for="resetEmail" class="text-muted"><i class="bi bi-envelope me-1"></i> Work email address</label>
+              <div class="invalid-feedback" id="resetEmailError" style="display: none;"></div>
+            </div>
+
+            <!-- Dynamic Status / Verification Message Alert -->
+            <div id="resetStatusAlert" class="d-none alert py-2 px-3 rounded-3 mb-3 small d-flex align-items-center">
+            </div>
+
+            <!-- Verified Account Badge (shown after step 1 succeeds) -->
+            <div id="resetAccountVerifiedBadge"
+              class="d-none alert alert-light border d-flex align-items-center justify-content-between py-2 px-3 rounded-3 mb-3"
+              style="background-color: #f0fdf4; border-color: #bbf7d0 !important;">
+              <div class="d-flex align-items-center gap-2 text-success small fw-semibold">
+                <i class="bi bi-check-circle-fill fs-6"></i>
+                <span id="verifiedUserName">Account Verified</span>
+              </div>
+              <button type="button" class="btn btn-sm btn-link text-decoration-none text-muted p-0 small"
+                id="resetChangeEmailBtn" style="font-size: 0.75rem;">Change</button>
+            </div>
+
+            <!-- New Password Section (Step 2) -->
+            <div id="newPasswordSection" class="d-none">
+              <div class="form-floating mb-2">
+                <input type="password" class="form-control rounded-3 lb-form-control" id="newPasswordInput"
+                  placeholder="New Password">
+                <label for="newPasswordInput" class="text-muted"><i class="bi bi-lock me-1"></i> New Password</label>
+                <div class="invalid-feedback" id="newPasswordError" style="display: none;"></div>
+              </div>
+
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control rounded-3 lb-form-control" id="confirmPasswordInput"
+                  placeholder="Confirm Password">
+                <label for="confirmPasswordInput" class="text-muted"><i class="bi bi-shield-check me-1"></i> Confirm New
+                  Password</label>
+                <div class="invalid-feedback" id="confirmPasswordError" style="display: none;"></div>
+              </div>
+            </div>
+
+            <!-- Success Alert -->
+            <div id="resetSuccessAlert" class="d-none alert alert-success py-2.5 px-3 rounded-3 mb-3">
+              <div class="d-flex align-items-center gap-2 mb-1 fw-bold text-success small">
+                <i class="bi bi-check2-circle fs-5"></i>
+                <span>Password Saved in Local Storage!</span>
+              </div>
+              <p class="mb-0 text-secondary" style="font-size: 0.76rem;">Your password has been updated in local
+                storage. You can now sign in.</p>
+            </div>
+
+            <!-- Submit / Action Button -->
+            <button
+              class="btn btn-primary w-100 py-2.5 rounded-3 fw-semibold shadow-sm d-flex align-items-center justify-content-center gap-2 lb-submit-btn"
+              type="submit" id="resetSubmitBtn">
+              <span id="resetSubmitBtnText">Verify Email</span>
+              <i class="bi bi-arrow-right small" id="resetSubmitBtnIcon"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
