@@ -1,0 +1,51 @@
+[
+    {
+        "id": 1,
+        "title": "Working Hours Policy",
+        "description": "Employees must follow the official working hours of the company.",
+         "file": "policies/working-hours.pdf"
+    },
+    {
+        "id": 2,
+        "title": "Attendance Policy",
+        "description": "Employees must attend work on time and follow the company's attendance rules.",
+        "file": "policies/attendance.pdf"
+    },
+    {
+        "id": 3,
+        "title": "Leave Policy",
+        "description": "Employees can submit leave requests through the HR Management System.",
+        "file": "policies/leave.pdf"
+    },
+    {
+        "id": 4,
+        "title": "Code of Conduct",
+        "description": "Employees must maintain professional and respectful behavior in the workplace.",
+           "file": "policies/code-of-conduct.pdf"
+    },
+    {
+        "id": 5,
+        "title": "Data Privacy Policy",
+        "description": "Employee and company information must be kept confidential and protected.",
+        "file": "policies/data-privacy.pdf"
+    },
+    {
+        "id": 6,
+        "title": "IT Security Policy",
+        "description": "Company systems and devices must be used responsibly and securely.",
+        "file": "policies/it-security.pdf"
+    },
+    {
+        "id": 7,
+        "title": "Remote Work Policy",
+        "description": "Remote work is allowed only with prior approval from the HR department.",
+        "file": "policies/remote-work.pdf"
+    },
+    {
+        "id": 8,
+        "title": "Overtime Policy",
+        "description": "Overtime work must be approved by the responsible manager.",
+        "file": "policies/overtime.pdf"
+
+    }
+]

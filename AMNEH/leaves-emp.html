@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Request Management</title>
+    <link rel="stylesheet" href="./sty.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header class="main-header">
+            <div>
+                <a href="../NADA/home.html" style="display:inline-block; margin-bottom:8px; color:#4a5568; text-decoration:none; font-size:14px; font-weight:500;">&larr; Back to Home</a>
+                <h2>My Leave Requests</h2>
+                <p>Manage and track time-off requests effectively</p>
+            </div>
+            <div>
+                <button id="openModalBtn" class="btn btn-primary">+ Request Leave</button>
+            </div>
+        </header>
+<!-- 1. أزرار راديو مخفية للفلترة -->
+    <input type="radio" name="leaveFilter" id="filter-annual" class="filter-radio">
+    <input type="radio" name="leaveFilter" id="filter-sick" class="filter-radio">
+    <input type="radio" name="leaveFilter" id="filter-departure" class="filter-radio">
+
+    <!-- 2. بطاقات الإحصائيات (تتحدد بالضغط) -->
+    <section class="stats-grid">
+        <label for="filter-annual" class="stat-card annual">
+            <div class="icon-box"></div>
+            <div>
+                <span class="stat-label">ANNUAL</span>
+                <h3>Annual</h3>
+            </div>
+        </label>
+
+        <label for="filter-sick" class="stat-card sick">
+            <div class="icon-box"></div>
+            <div>
+                <span class="stat-label">SICK</span>
+                <h3>Sick</h3>
+            </div>
+        </label>
+
+        <label for="filter-departure" class="stat-card departure">
+            <div class="icon-box"></div>
+            <div>
+                <span class="stat-label">DEPARTURE</span>
+                <h3>Departure</h3>
+            </div>
+        </label>
+    </section>
+
+        <!-- الجدول -->
+        <main class="table-card">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>LEAVE TYPE</th>
+                        <th>DURATION / TIME</th>
+                        <th>REASON</th>
+                        <th>ATTACHMENT</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="requestsTable">
+                    <!-- تتعبأ الصفوف بالـ JS بخصائص data-type -->
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <!-- النافذة المنبثقة Modal -->
+    <div id="leaveModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Submit Leave Request</h3>
+                <button id="closeModalBtn" class="close-btn">&times;</button>
+            </div>
+
+            <form id="leaveForm">
+                <div class="form-group">
+                    <label for="leaveType">Leave Type</label>
+                    <select id="leaveType" required>
+                        <option value="">Choose departure type</option>
+                        <option value="Annual">Annual</option>
+                        <option value="sick">Sick</option>
+                        <option value="Departure">Departure</option>
+                    </select>
+                </div>
+
+                <div id="leaveDates" class="d-none form-row">
+                    <div class="form-group col">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <div class="form-group col">
+                        <label for="endDate">End Date</label>
+                        <input type="date" id="endDate">
+                    </div>
+                </div>
+
+                <div id="departureTime" class="d-none">
+                    <div class="form-group">
+                        <label for="departureDate">Departure Date</label>
+                        <input type="date" id="departureDate">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label for="startTime">From</label>
+                            <input type="time" id="startTime">
+                        </div>
+                        <div class="form-group col">
+                            <label for="endTime">To</label>
+                            <input type="time" id="endTime">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Reason</label>
+                    <div class="custom-textarea-container">
+                        <textarea id="reason" rows="3" placeholder="write the reason" required></textarea>
+                        <div class="attachment-bar">
+                            <label for="attachment" class="attachment-btn">Attach PDF</label>
+                            <input type="file" id="attachment" accept=".pdf,application/pdf" style="display: none;">
+                            <span id="fileNameDisplay" class="file-name-text">No file attached</span>
+                            <button type="button" id="removeAttachmentBtn" class="attachment-remove-btn d-none" title="Remove PDF">&times;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancelModalBtn" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="java.js"></script>
+</body>
+</html>

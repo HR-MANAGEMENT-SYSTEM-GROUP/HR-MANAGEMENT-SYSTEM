@@ -1,0 +1,360 @@
+/* ==========================================================================
+   BRIDGEWAY HR - HR LEAVE MANAGEMENT PORTAL
+   Consistent with C:\Users\user\Desktop\HR-MANAGEMENT-SYSTEM (GAITH\profile)
+   Palette: #0079F1 Primary, #F7FAFC Canvas, #FFFFFF Cards, #E5E7EB Borders
+   Typography: Plus Jakarta Sans (Headings) & Inter (Body / Controls)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+/* --------------------------------------------------------------------------
+   1. CSS COLOR VARIABLES & SYSTEM TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+  --primary: #0079F1;
+  --primary-dark: #005BB5;
+  --primary-light: #4DA3FF;
+  --very-light-blue: #E8F3FF;
+  --white: #FFFFFF;
+  --off-white: #F7FAFC;
+  --light-gray: #E5E7EB;
+  --text-dark: #172033;
+  --text-gray: #64748B;
+  --text-muted: #94A3B8;
+
+  /* Functional Alert & State Colors */
+  --danger: #DC2626;
+  --danger-light: #FEF2F2;
+  --danger-border: #FCA5A5;
+  --success: #16A34A;
+  --success-light: #F0FDF4;
+  --success-border: #BBF7D0;
+  --warning: #D97706;
+  --warning-light: #FFFBEB;
+  --warning-border: #FDE68A;
+
+  /* Elevation & Borders */
+  --card-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --card-shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --focus-ring: 0 0 0 3px rgba(77, 163, 255, 0.35);
+
+  --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   2. GLOBAL RESET & BASE STYLES
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  background-color: var(--off-white);
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--off-white);
+  color: var(--text-dark);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container.my-4 {
+  max-width: 1140px;
+  margin: 2.5rem auto !important;
+  padding: 0 1.5rem !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Hide portal switcher links if any exist in DOM */
+a[href*="leaves-emp"] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. HEADER SECTION
+   -------------------------------------------------------------------------- */
+h2 {
+  font-family: var(--font-heading);
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-dark);
+  margin-bottom: 0.25rem;
+}
+
+.text-secondary {
+  font-size: 0.875rem;
+  color: var(--text-gray) !important;
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   4. FILTER & SEARCH CONTROLS
+   -------------------------------------------------------------------------- */
+.row.my-3 {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.row.my-3 .col-md-6 {
+  flex: 1;
+  min-width: 260px;
+}
+
+#searchEmployee,
+#statusFilter,
+.form-control,
+.form-select {
+  width: 100%;
+  height: 44px;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--light-gray);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  background-color: var(--white);
+  color: var(--text-dark);
+  outline: none;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#searchEmployee::placeholder {
+  color: var(--text-muted);
+}
+
+#searchEmployee:hover,
+#statusFilter:hover,
+.form-control:hover,
+.form-select:hover {
+  border-color: #CBD5E1;
+}
+
+#searchEmployee:focus,
+#statusFilter:focus,
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+}
+
+/* --------------------------------------------------------------------------
+   5. HR REQUESTS TABLE (Clean Corporate Light Design, Overriding table-dark)
+   -------------------------------------------------------------------------- */
+.tableReq {
+  background-color: var(--white);
+  border: 1px solid var(--light-gray);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+table,
+.table,
+.table-dark {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background-color: var(--white) !important;
+  color: var(--text-dark) !important;
+  margin: 0 !important;
+}
+
+/* Table Header */
+table thead th,
+.table thead th,
+.table-dark thead th {
+  background-color: #F8FAFC !important;
+  color: #475569 !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 1px solid var(--light-gray) !important;
+  border-top: none !important;
+  padding: 0.875rem 1.25rem !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+}
+
+/* Table Body Cells */
+table tbody td,
+.table tbody td,
+.table-dark tbody td {
+  background-color: var(--white) !important;
+  color: var(--text-dark) !important;
+  border-bottom: 1px solid #F1F5F9 !important;
+  border-top: none !important;
+  padding: 1rem 1.25rem !important;
+  font-size: 0.875rem !important;
+  vertical-align: middle !important;
+}
+
+table tbody td strong,
+.table tbody td strong {
+  font-weight: 600 !important;
+  color: var(--text-dark) !important;
+}
+
+/* Table Hover State */
+table tbody tr:hover td,
+.table-hover tbody tr:hover td {
+  background-color: #F8FAFC !important;
+}
+
+table tbody tr:last-child td,
+.table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. ATTACHMENT BADGE (SVG Vector Icon, No Emojis)
+   -------------------------------------------------------------------------- */
+.btn-attachment-hr {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 0.35rem 0.75rem !important;
+  background-color: var(--very-light-blue) !important;
+  color: var(--primary-dark) !important;
+  border: 1px solid #BFDBFE !important;
+  border-radius: 6px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-attachment-hr::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'%3E%3C/path%3E%3Cpolyline points='14 2 14 8 20 8'%3E%3C/polyline%3E%3Cline x1='16' y1='13' x2='8' y2='13'%3E%3C/line%3E%3Cline x1='16' y1='17' x2='8' y2='17'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'%3E%3C/path%3E%3Cpolyline points='14 2 14 8 20 8'%3E%3C/polyline%3E%3Cline x1='16' y1='13' x2='8' y2='13'%3E%3C/line%3E%3Cline x1='16' y1='17' x2='8' y2='17'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+.btn-attachment-hr:hover {
+  background-color: var(--primary) !important;
+  color: var(--white) !important;
+  border-color: var(--primary-dark) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. STATUS BADGES
+   -------------------------------------------------------------------------- */
+.badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 9999px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+}
+
+.badge-approved,
+.bg-success {
+  background-color: var(--success-light) !important;
+  color: var(--success) !important;
+  border: 1px solid var(--success-border) !important;
+}
+
+.badge-rejected,
+.bg-danger {
+  background-color: var(--danger-light) !important;
+  color: var(--danger) !important;
+  border: 1px solid var(--danger-border) !important;
+}
+
+.badge-pending,
+.bg-warning {
+  background-color: var(--warning-light) !important;
+  color: var(--warning) !important;
+  border: 1px solid var(--warning-border) !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. ACTION BUTTONS (Approve & Reject)
+   -------------------------------------------------------------------------- */
+.btn-approve {
+  background-color: var(--success) !important;
+  color: var(--white) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 0.4rem 0.85rem !important;
+  cursor: pointer !important;
+  margin-right: 0.35rem !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-approve:hover {
+  background-color: #15803D !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+}
+
+.btn-reject {
+  background-color: var(--danger) !important;
+  color: var(--white) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 0.4rem 0.85rem !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-reject:hover {
+  background-color: #B91C1C !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+}
+
+/* Text danger in rejected reason */
+.text-danger {
+  color: var(--danger) !important;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   9. RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .container.my-4 {
+    margin: 1.5rem auto !important;
+    padding: 0 1rem !important;
+  }
+
+  .row.my-3 {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  table thead th,
+  table tbody td {
+    padding: 0.75rem 0.9rem !important;
+    font-size: 0.8125rem !important;
+  }
+}

@@ -1,0 +1,701 @@
+/* ==========================================================================
+   BRIDGEWAY HR - EMPLOYEE LEAVE MANAGEMENT SYSTEM
+   Consistent with C:\Users\user\Desktop\HR-MANAGEMENT-SYSTEM (GAITH\profile)
+   Palette: #0079F1 Primary, #F7FAFC Canvas, #FFFFFF Cards, #E5E7EB Borders
+   Typography: Plus Jakarta Sans (Headings) & Inter (Body / Controls)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+/* --------------------------------------------------------------------------
+   1. CSS COLOR VARIABLES & SYSTEM TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+  --primary: #0079F1;
+  --primary-dark: #005BB5;
+  --primary-light: #4DA3FF;
+  --very-light-blue: #E8F3FF;
+  --white: #FFFFFF;
+  --off-white: #F7FAFC;
+  --light-gray: #E5E7EB;
+  --text-dark: #172033;
+  --text-gray: #64748B;
+  --text-muted: #94A3B8;
+
+  /* Functional Alert & State Colors */
+  --danger: #DC2626;
+  --danger-light: #FEF2F2;
+  --danger-border: #FCA5A5;
+  --success: #16A34A;
+  --success-light: #F0FDF4;
+  --success-border: #BBF7D0;
+  --warning: #D97706;
+  --warning-light: #FFFBEB;
+  --warning-border: #FDE68A;
+
+  /* Elevation & Borders */
+  --card-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --card-shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --focus-ring: 0 0 0 3px rgba(77, 163, 255, 0.35);
+  --focus-ring-danger: 0 0 0 3px rgba(220, 38, 38, 0.2);
+
+  --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --------------------------------------------------------------------------
+   2. GLOBAL RESET & BASE STYLES
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  background-color: var(--off-white);
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--off-white);
+  color: var(--text-dark);
+  min-height: 100vh;
+  padding: 2.5rem 1.5rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dashboard-container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+/* Hide portal switcher links if any exist in DOM */
+a[href*="leaves-hr"] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. HEADER SECTION
+   -------------------------------------------------------------------------- */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.main-header h2 {
+  font-family: var(--font-heading);
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-dark);
+  margin-bottom: 0.25rem;
+}
+
+.main-header p {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   4. STATS CARDS & VECTOR ICONS (NO EMOJIS, CLEAN PALETTE)
+   -------------------------------------------------------------------------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--light-gray);
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: #CBD5E1;
+}
+
+/* Crisp 44px Icon Container (Zero text/emoji visibility) */
+.icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--off-white);
+  border: 1px solid var(--light-gray);
+  flex-shrink: 0;
+  font-size: 0 !important;
+  color: transparent !important;
+  line-height: 0 !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Clean vector SVG line icons */
+.stat-card.annual .icon-box::before {
+  content: '';
+  width: 22px;
+  height: 22px;
+  display: block;
+  background-color: var(--primary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+.stat-card.sick .icon-box::before {
+  content: '';
+  width: 22px;
+  height: 22px;
+  display: block;
+  background-color: var(--primary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-4l-3 9L9 3l-3 9H2'%3E%3C/path%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-4l-3 9L9 3l-3 9H2'%3E%3C/path%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+.stat-card.departure .icon-box::before {
+  content: '';
+  width: 22px;
+  height: 22px;
+  display: block;
+  background-color: var(--primary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpolyline points='12 6 12 12 16 14'%3E%3C/polyline%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpolyline points='12 6 12 12 16 14'%3E%3C/polyline%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-gray);
+  text-transform: uppercase;
+  display: block;
+}
+
+.stat-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-top: 2px;
+}
+
+/* Hidden Filter Radio Logic */
+.filter-radio {
+  display: none;
+}
+
+/* Interactive Card Selection Highlights (Refined, no off-colors) */
+#filter-annual:checked ~ .stats-grid .annual,
+#filter-sick:checked ~ .stats-grid .sick,
+#filter-departure:checked ~ .stats-grid .departure {
+  border-color: var(--primary);
+  background-color: var(--white);
+  box-shadow: 0 0 0 2px rgba(0, 121, 241, 0.2), var(--card-shadow);
+}
+
+#filter-annual:checked ~ .stats-grid .annual .icon-box,
+#filter-sick:checked ~ .stats-grid .sick .icon-box,
+#filter-departure:checked ~ .stats-grid .departure .icon-box {
+  background-color: var(--very-light-blue);
+  border-color: #BFDBFE;
+}
+
+/* CSS-based Table Rows Filtering */
+#filter-annual:checked ~ .table-card tbody tr[data-type]:not([data-type="annual"]),
+#filter-sick:checked ~ .table-card tbody tr[data-type]:not([data-type="sick"]),
+#filter-departure:checked ~ .table-card tbody tr[data-type]:not([data-type="departure"]) {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. REQUESTS TABLE (Clean Corporate Light Design)
+   -------------------------------------------------------------------------- */
+.table-card {
+  background: var(--white);
+  border-radius: 12px;
+  border: 1px solid var(--light-gray);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.custom-table th {
+  background-color: #F8FAFC;
+  padding: 0.875rem 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #475569;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--light-gray);
+  white-space: nowrap;
+}
+
+.custom-table td {
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+  color: var(--text-dark);
+  border-bottom: 1px solid #F1F5F9;
+  vertical-align: middle;
+}
+
+.custom-table td strong {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.custom-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #F8FAFC;
+}
+
+.custom-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* --------------------------------------------------------------------------
+   6. STATUS BADGES & ATTACHMENT BADGE
+   -------------------------------------------------------------------------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.badge-approved, .bg-success {
+  background-color: var(--success-light) !important;
+  color: var(--success) !important;
+  border: 1px solid var(--success-border) !important;
+}
+
+.badge-rejected, .bg-danger {
+  background-color: var(--danger-light) !important;
+  color: var(--danger) !important;
+  border: 1px solid var(--danger-border) !important;
+}
+
+.badge-pending, .bg-warning {
+  background-color: var(--warning-light) !important;
+  color: var(--warning) !important;
+  border: 1px solid var(--warning-border) !important;
+}
+
+/* Table Attachment Button with clean SVG Document Icon (No Emojis) */
+.attachment-badge-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.35rem 0.75rem;
+  background-color: var(--very-light-blue);
+  color: var(--primary-dark);
+  border: 1px solid #BFDBFE;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.attachment-badge-btn::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'%3E%3C/path%3E%3Cpolyline points='14 2 14 8 20 8'%3E%3C/polyline%3E%3Cline x1='16' y1='13' x2='8' y2='13'%3E%3C/line%3E%3Cline x1='16' y1='17' x2='8' y2='17'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'%3E%3C/path%3E%3Cpolyline points='14 2 14 8 20 8'%3E%3C/polyline%3E%3Cline x1='16' y1='13' x2='8' y2='13'%3E%3C/line%3E%3Cline x1='16' y1='17' x2='8' y2='17'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+.attachment-badge-btn:hover {
+  background-color: var(--primary);
+  color: var(--white);
+  border-color: var(--primary-dark);
+}
+
+/* --------------------------------------------------------------------------
+   7. MODAL OVERLAY & POPUP FORM
+   -------------------------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 1050;
+  padding: 1.5rem;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: var(--white);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 520px;
+  padding: 1.75rem;
+  border: 1px solid var(--light-gray);
+  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+  transform: translateY(-10px) scale(0.98);
+  transition: all 0.2s ease;
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.modal-header h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-dark);
+}
+
+.close-btn {
+  background: var(--off-white);
+  border: 1px solid var(--light-gray);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  background: var(--light-gray);
+  color: var(--text-dark);
+}
+
+/* Form Controls */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.375rem;
+}
+
+.form-group select,
+.form-group input[type="date"],
+.form-group input[type="time"] {
+  width: 100%;
+  height: 44px;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--light-gray);
+  background-color: var(--white);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--text-dark);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-group select:hover,
+.form-group input[type="date"]:hover,
+.form-group input[type="time"]:hover {
+  border-color: #CBD5E1;
+}
+
+.form-group select:focus,
+.form-group input[type="date"]:focus,
+.form-group input[type="time"]:focus {
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  background: var(--off-white);
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--light-gray);
+  margin-bottom: 1.25rem;
+}
+
+.form-row .col {
+  flex: 1;
+}
+
+.form-row .form-group {
+  margin-bottom: 0;
+}
+
+/* Custom Textarea with Attachment Bar */
+.custom-textarea-container {
+  border: 1px solid var(--light-gray);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--white);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.custom-textarea-container:hover {
+  border-color: #CBD5E1;
+}
+
+.custom-textarea-container:focus-within {
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+}
+
+.custom-textarea-container textarea {
+  width: 100%;
+  min-height: 90px;
+  border: none;
+  background: transparent;
+  padding: 0.75rem 0.85rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--text-dark);
+  outline: none;
+  resize: vertical;
+}
+
+.custom-textarea-container textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.attachment-bar {
+  border-top: 1px solid var(--light-gray);
+  padding: 0.5rem 0.85rem;
+  background: var(--off-white);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Attachment Button with Clean SVG Paperclip Icon (No Emojis) */
+.attachment-btn {
+  background: var(--white);
+  border: 1px solid var(--light-gray);
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.attachment-btn::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  background-color: var(--text-gray);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48'%3E%3C/path%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48'%3E%3C/path%3E%3C/svg%3E") no-repeat center / contain;
+  transition: background-color 0.2s ease;
+}
+
+.attachment-btn:hover {
+  background: var(--very-light-blue);
+  color: var(--primary-dark);
+  border-color: #BFDBFE;
+}
+
+.attachment-btn:hover::before {
+  background-color: var(--primary-dark);
+}
+
+.file-name-text {
+  font-size: 0.775rem;
+  color: var(--text-gray);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 250px;
+}
+
+.file-name-text.has-file {
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.attachment-remove-btn {
+  background: var(--danger-light);
+  color: var(--danger);
+  border: 1px solid var(--danger-border);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  margin-left: auto;
+  transition: all 0.2s ease;
+}
+
+.attachment-remove-btn:hover {
+  background: #FCA5A5;
+  color: #991B1B;
+}
+
+/* --------------------------------------------------------------------------
+   8. BUTTONS & ACTIONS
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+  box-shadow: 0 2px 4px rgba(0, 121, 241, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  box-shadow: 0 4px 10px rgba(0, 121, 241, 0.3);
+}
+
+.btn-primary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.btn-secondary {
+  background-color: var(--white);
+  border-color: var(--light-gray);
+  color: var(--text-dark);
+}
+
+.btn-secondary:hover {
+  background-color: #F8FAFC;
+  border-color: #CBD5E1;
+  color: var(--text-dark);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   9. UTILITIES & RESPONSIVE
+   -------------------------------------------------------------------------- */
+.d-none {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 1.5rem 1rem;
+  }
+
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .custom-table th,
+  .custom-table td {
+    padding: 0.75rem 0.9rem;
+    font-size: 0.8125rem;
+  }
+
+  .modal-content {
+    padding: 1.25rem;
+  }
+}

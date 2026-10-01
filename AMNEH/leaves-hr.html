@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Leave Management Portal</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+   
+    <div class="container my-4">
+        <div style="margin-bottom: 1.5rem;" class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h2>Leave Requests</h2>
+                <p class="text-secondary" style="margin-bottom: 0;">Review and respond to employee leave requests</p>
+            </div>
+            <div>
+                <a href="../NADA/hrdashboard.html" class="btn btn-outline-secondary btn-sm" style="color: #cbd5e1; border-color: #475569; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 14px; display: inline-block;">&larr; Back to HR Dashboard</a>
+            </div>
+        </div>
+
+        <div class="row my-3 g-2">
+            <div class="col-md-6">
+                <input type="text" id="searchEmployee" class="form-control" placeholder="Filter by employee name...">
+            </div>
+            <div class="col-md-6">
+                <select id="statusFilter" class="form-select">
+                    <option value="All">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="tableReq mt-4">
+            <table class="table table-dark table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Type</th>
+                        <th>Dates / Time</th>
+                        <th>Reason</th>
+                        <th>Attachment</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="hrRequestsTable">
+                
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="java-hr.js"></script>
+</body>
+</html>

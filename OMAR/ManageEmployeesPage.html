@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+    <link rel="stylesheet" href="ManageEmployeesPage.css">
+</head>
+<body>
+
+<div class="page">
+    <div style="margin-bottom: 16px;">
+        <a href="../NADA/hrdashboard.html" style="text-decoration: none; color: #475569; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: 14px;">&larr; Back to HR Dashboard</a>
+    </div>
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>Employees</h1>
+            <p>Manage employee accounts, departments, positions and status.</p>
+        </div>
+        <button class="add-button" onclick="showForm()">+ Add Employee</button>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-cards">
+        <div class="summary-card">
+            <span>Employees</span>
+            <h2 id="totalEmployees">0</h2>
+        </div>
+        <div class="summary-card">
+            <span>Active</span>
+            <h2 id="activeEmployees">0</h2>
+        </div>
+        <div class="summary-card">
+            <span>Blocked</span>
+            <h2 id="blockedEmployees">0</h2>
+        </div>
+        <div class="summary-card">
+            <span>Departments</span>
+            <h2 id="totalDepartments">0</h2>
+        </div>
+    </div>
+
+    <!-- Employee List -->
+    <section class="employee-section">
+        <div class="tools">
+            <div class="search-filter">
+                <input type="text" id="search" placeholder="Search by name or email...">
+
+                <select id="departmentFilter">
+                    <option value="">All Departments</option>
+                    <option value="IT">IT</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Operations">Operations</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Human Resources">Human Resources</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-box">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Position</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="container"></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<!-- Add / Edit Employee -->
+<div id="employeeForm" class="modal" hidden>
+    <div class="modal-box">
+        <div class="modal-header">
+            <div>
+                <h2 id="formTitle">New Employee</h2>
+                <p>Add or update employee information.</p>
+            </div>
+            <button type="button" class="close-button" onclick="hideForm()">×</button>
+        </div>
+
+        <form id="form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone">
+                </div>
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <select id="department" required>
+                        <option value="">Select Department</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Finance">Finance</option>
+                        <option value="IT">IT</option>
+                        <option value="Operations">Operations</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Human Resources">Human Resources</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="position">Position</label>
+                    <input type="text" id="position" required>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Blocked">Blocked</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="joiningDate">Joining Date</label>
+                <input type="date" id="joiningDate">
+            </div>
+
+            <div class="form-buttons">
+                <button type="button" class="cancel-button" onclick="hideForm()">Cancel</button>
+                <button type="submit" id="saveButton" class="save-button">Save Employee</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- View Employee -->
+<div id="viewEmployeeModal" class="modal" hidden>
+    <div class="modal-box view-modal">
+        <div class="modal-header">
+            <div>
+                <h2 id="viewEmployeeName">Employee</h2>
+                <p>Employee account and employment details.</p>
+            </div>
+            <button type="button" class="close-button" onclick="closeEmployeeView()">×</button>
+        </div>
+
+        <div class="employee-view-grid">
+            <div class="view-card">
+                <h3>Account Overview</h3>
+                <div class="detail-row"><strong>Email</strong><span id="viewEmail"></span></div>
+                <div class="detail-row"><strong>Phone</strong><span id="viewPhone"></span></div>
+                <div class="detail-row"><strong>Department</strong><span id="viewDepartment"></span></div>
+                <div class="detail-row"><strong>Position</strong><span id="viewPosition"></span></div>
+                <div class="detail-row"><strong>Joining Date</strong><span id="viewJoiningDate"></span></div>
+                <div class="detail-row"><strong>Status</strong><span id="viewStatus"></span></div>
+            </div>
+
+            <div class="view-card employment-card">
+                <h3>Employee Details</h3>
+                <p class="view-description">Department and position information for this employee.</p>
+                <div class="employment-info">
+                    <div>
+                        <span>Department</span>
+                        <strong id="viewDepartmentCard">-</strong>
+                    </div>
+                    <div>
+                        <span>Position</span>
+                        <strong id="viewPositionCard">-</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="ManageEmployeesPage.js"></script>
+</body>
+</html>
