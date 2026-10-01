@@ -1,25 +1,26 @@
 /**
  * ==============================================================================
- * BRIDGEWAY HR - EMPLOYEE PROFILE ENGINE
- * Senior Front-End Implementation
+ * BRIDGEWAY HR - UNIFIED PROFILE ENGINE (profile.js)
+ * Supports Employee & HR Admin with dynamic role-based permissions
  * ==============================================================================
  * Features:
- * - Read-only official fields: Full Name, Job Title, Work Email, Department
- * - Editable & validated fields: Phone Number, Profile Photo (Upload only)
- * - Single source of truth for avatar state with downscaling (canvas 256x256)
- * - Dynamic initials SVG avatar generator and onerror fallback (no broken icons)
- * - Phone validation on blur and submit with accessible aria-describedby
- * - Dirty tracking for Save Changes button and beforeunload warning
- * - Data consistency across localStorage (currentUser, users, employees, passwords)
- * - Local password reset with 8+ alphanumeric and special character regex
- * - Authenticated navbar dropdown with profile view and logout redirect
+ * - Dynamic Role Configuration:
+ *   * Employee: Full Name, Job Title, Email, Department are read-only (locked).
+ *   * HR Admin: Full Name, Job Title, Department are unlocked & editable.
+ *   * Both: Phone Number and Profile Photo (upload only) are editable.
+ * - Live Summary Card Mirroring: Instant updates as user edits fields.
+ * - Single source of truth for avatar downscaling (canvas 256x256) & SVG fallback.
+ * - Role-isolated session management: HR and Employee profiles never overwrite each other.
+ * - Dirty tracking and unsaved changes warning on beforeunload.
+ * - Data consistency across localStorage (currentUser, users, employees, passwords).
+ * - Local password reset with 8+ alphanumeric & special character validation.
  * ==============================================================================
  */
 
 (function () {
   'use strict';
 
-  // Fallback user if localStorage has no active session
+  // Fallback defaults for each role
   const DEFAULT_USER = {
     id: 1,
     name: 'Abdullah Saleh',
@@ -33,10 +34,26 @@
     profilePicture: '../../jsonFiles/images/employee1.jpg'
   };
 
+  const DEFAULT_HR_USER = {
+    id: 12,
+    name: 'Maya Nasser',
+    email: 'maya.nasser@company.com',
+    phone: '0782345679',
+    role: 'hr',
+    position: 'HR Manager',
+    department: 'Human Resources',
+    joiningDate: '2/12/2025',
+    status: 'Active',
+    profilePicture: '../../jsonFiles/images/hr1.jpg'
+  };
+
   // State
   let currentUser = null;
   let stagedAvatar = '';
   let savedState = {
+    name: '',
+    position: '',
+    department: '',
     phone: '',
     avatar: ''
   };
@@ -54,7 +71,6 @@
   const cardFullName = document.getElementById('cardFullName');
   const cardPosition = document.getElementById('cardPosition');
   const cardRoleBadge = document.getElementById('cardRoleBadge');
-  const cardStatusBadge = document.getElementById('cardStatusBadge');
   const cardProfileImg = document.getElementById('cardProfileImg');
   const cardEmail = document.getElementById('cardEmail');
   const cardDepartment = document.getElementById('cardDepartment');
@@ -100,17 +116,18 @@
   const passwordStatusText = document.getElementById('passwordStatusText');
 
   // ============================================================================
-  // 1. INITIALIZATION & SESSION LOADING
+  // 1. INITIALIZATION & ROLE-AWARE SESSION LOADING
   // ============================================================================
   async function initProfile() {
-    // Check if user recently explicitly logged out
     if (sessionStorage.getItem('logged_out') === 'true') {
       sessionStorage.removeItem('logged_out');
       window.location.href = '../login.html';
       return;
     }
 
-    // 1. Retrieve session from localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestedRole = urlParams.get('role'); // e.g. ?role=hr
+
     const storedUserStr = localStorage.getItem('currentUser');
     if (storedUserStr) {
       try {
@@ -120,37 +137,40 @@
       }
     }
 
-    // 2. If no session, fetch from Users.json directory or fallback to DEFAULT_USER
+    // If a specific role is requested in the URL and doesn't match current user, reset to fetch that role
+    if (requestedRole && currentUser?.role !== requestedRole) {
+      currentUser = null;
+    }
+
+    // Determine target role fallback if no session exists
     if (!currentUser) {
-      currentUser = await fetchInitialUserFromDirectory();
+      const preferredRole = requestedRole || localStorage.getItem('userRole') || 'employee';
+      currentUser = await fetchInitialUserFromDirectory(preferredRole);
       try {
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
         localStorage.setItem('userRole', currentUser.role || 'employee');
       } catch (e) {
-        console.warn('Unable to persist initial session to localStorage:', e);
+        console.warn('Unable to persist session to localStorage:', e);
       }
     }
 
-    // 3. Resolve initial avatar
     stagedAvatar = resolveImagePath(currentUser.profilePicture, currentUser.name);
-
-    // 4. Record baseline saved state for dirty tracking
     savedState = {
+      name: currentUser.name || '',
+      position: currentUser.position || '',
+      department: currentUser.department || '',
       phone: currentUser.phone || '',
       avatar: stagedAvatar
     };
 
-    // 5. Render to UI
+    configureRolePermissions(currentUser.role);
     renderProfileToDOM(currentUser);
     populateForm(currentUser);
     updateDirtyState();
-
-    // 6. Setup image fallback handlers
     setupImageFallbacks();
   }
 
-  // Fetch initial employee record from Users.json directory
-  async function fetchInitialUserFromDirectory() {
+  async function fetchInitialUserFromDirectory(preferredRole = 'employee') {
     const candidatePaths = [
       'images/../Users.json',
       '../Users.json',
@@ -166,21 +186,99 @@
         if (response.ok) {
           const users = await response.json();
           if (Array.isArray(users) && users.length > 0) {
-            return { ...DEFAULT_USER, ...users[0] };
+            const matched = users.find(u => u.role === preferredRole) || users[0];
+            const fallback = preferredRole === 'hr' ? DEFAULT_HR_USER : DEFAULT_USER;
+            return { ...fallback, ...matched };
           }
         }
       } catch (_) {}
     }
 
-    return { ...DEFAULT_USER };
+    return preferredRole === 'hr' ? { ...DEFAULT_HR_USER } : { ...DEFAULT_USER };
   }
 
   // ============================================================================
-  // 2. AVATAR & IMAGE RESOLUTION ENGINE
+  // 2. DYNAMIC ROLE PERMISSIONS (EMPLOYEE VS HR ADMIN)
   // ============================================================================
-  /**
-   * Generates a sleek, accessible SVG Data URL avatar with employee initials
-   */
+  function configureRolePermissions(role) {
+    const isHR = role === 'hr';
+
+    // 1. Page Header & Breadcrumb
+    const pageTitle = document.getElementById('profilePageTitle');
+    const pageSubtitle = document.getElementById('profilePageSubtitle');
+    const breadcrumbText = document.getElementById('profileBreadcrumbText');
+
+    if (pageTitle) pageTitle.textContent = isHR ? 'HR Administrator Profile' : 'Employee Profile';
+    if (pageSubtitle) {
+      pageSubtitle.textContent = isHR
+        ? 'Manage your official HR administrative credentials, department records, and account security.'
+        : 'Manage your personal information, contact credentials, and account security.';
+    }
+    if (breadcrumbText) breadcrumbText.textContent = isHR ? 'HR Profile' : 'Employee Profile';
+
+    // 2. Role Badges
+    if (navRoleText) navRoleText.textContent = isHR ? 'HR Admin' : 'Employee';
+    if (navRoleBadge) navRoleBadge.classList.toggle('hr', isHR);
+    if (cardRoleBadge) {
+      cardRoleBadge.textContent = isHR ? 'HR ADMIN' : 'EMPLOYEE';
+      cardRoleBadge.classList.toggle('hr', isHR);
+    }
+
+    // 3. Full Name Field (Editable by HR, Read-only for Employee)
+    const badgeNameStatus = document.getElementById('badgeNameStatus');
+    const lockBadgeName = document.getElementById('lockBadgeName');
+    const nameHelp = document.getElementById('nameHelp');
+    if (editNameInput) {
+      editNameInput.readOnly = !isHR;
+      editNameInput.classList.toggle('is-editable-field', isHR);
+    }
+    if (badgeNameStatus) {
+      badgeNameStatus.textContent = isHR ? 'Editable by HR' : 'Official Record';
+      badgeNameStatus.classList.toggle('badge-editable', isHR);
+    }
+    if (lockBadgeName) lockBadgeName.style.display = isHR ? 'none' : 'flex';
+    if (nameHelp) {
+      nameHelp.textContent = isHR ? 'Edit your legal full name for official records.' : 'Official legal name from employee records (read-only).';
+    }
+
+    // 4. Job Title Field (Editable by HR, Read-only for Employee)
+    const badgePositionStatus = document.getElementById('badgePositionStatus');
+    const lockBadgePosition = document.getElementById('lockBadgePosition');
+    const positionHelp = document.getElementById('positionHelp');
+    if (editPositionInput) {
+      editPositionInput.readOnly = !isHR;
+      editPositionInput.classList.toggle('is-editable-field', isHR);
+    }
+    if (badgePositionStatus) {
+      badgePositionStatus.textContent = isHR ? 'Editable by HR' : 'HR Governed';
+      badgePositionStatus.classList.toggle('badge-editable', isHR);
+    }
+    if (lockBadgePosition) lockBadgePosition.style.display = isHR ? 'none' : 'flex';
+    if (positionHelp) {
+      positionHelp.textContent = isHR ? 'Edit your official job title or administrative designation.' : 'Position assignment is managed by HR administration (read-only).';
+    }
+
+    // 5. Department Field (Editable by HR, Read-only for Employee)
+    const badgeDeptStatus = document.getElementById('badgeDeptStatus');
+    const lockBadgeDept = document.getElementById('lockBadgeDept');
+    const deptHelp = document.getElementById('deptHelp');
+    if (editDepartmentInput) {
+      editDepartmentInput.readOnly = !isHR;
+      editDepartmentInput.classList.toggle('is-editable-field', isHR);
+    }
+    if (badgeDeptStatus) {
+      badgeDeptStatus.textContent = isHR ? 'Editable by HR' : 'Managed by HR';
+      badgeDeptStatus.classList.toggle('badge-editable', isHR);
+    }
+    if (lockBadgeDept) lockBadgeDept.style.display = isHR ? 'none' : 'flex';
+    if (deptHelp) {
+      deptHelp.textContent = isHR ? 'Specify your primary organizational department.' : 'Department placement is governed by HR policy (read-only).';
+    }
+  }
+
+  // ============================================================================
+  // 3. AVATAR & IMAGE RESOLUTION ENGINE
+  // ============================================================================
   function generateInitialsAvatar(name) {
     const trimmed = (name || 'Employee').trim();
     const parts = trimmed.split(/\s+/).filter(Boolean);
@@ -205,9 +303,6 @@
     return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
   }
 
-  /**
-   * Resolves raw image path into a safe, valid URI with initials fallback
-   */
   function resolveImagePath(path, userName) {
     if (!path || typeof path !== 'string' || path.trim() === '') {
       return generateInitialsAvatar(userName);
@@ -217,49 +312,29 @@
       return clean;
     }
 
-    // Match image filename e.g. employee1.jpg
     const match = clean.match(/([a-zA-Z0-9_\-]+\.(jpg|jpeg|png|gif|webp))$/i);
-    if (match) {
-      return `../../jsonFiles/images/${match[1]}`;
-    }
-
-    return clean;
+    return match ? `../../jsonFiles/images/${match[1]}` : clean;
   }
 
-  /**
-   * Attaches graceful onerror listener so images never show broken icons or raw alt text
-   */
   function setupImageFallbacks() {
-    const imagesToProtect = [
-      { el: cardProfileImg, getName: () => currentUser?.name },
-      { el: photoPreviewImg, getName: () => currentUser?.name },
-      { el: navAvatarImg, getName: () => currentUser?.name }
-    ];
-
-    imagesToProtect.forEach(({ el, getName }) => {
+    [cardProfileImg, photoPreviewImg, navAvatarImg].forEach(el => {
       if (!el) return;
       el.addEventListener('error', function () {
         this.onerror = null;
-        this.src = generateInitialsAvatar(getName());
+        this.src = generateInitialsAvatar(currentUser?.name);
       });
     });
   }
 
   // ============================================================================
-  // 3. DATE & DOM PRESENTATION
+  // 4. DATE & DOM PRESENTATION
   // ============================================================================
-  /**
-   * Formats date string into unambiguous "8 Jun 2024" format using Intl.DateTimeFormat
-   */
   function formatJoiningDate(dateStr) {
     if (!dateStr) return 'N/A';
     const parts = dateStr.split('/');
     let dateObj;
     if (parts.length === 3) {
-      const month = parseInt(parts[0], 10) - 1;
-      const day = parseInt(parts[1], 10);
-      const year = parseInt(parts[2], 10);
-      dateObj = new Date(year, month, day);
+      dateObj = new Date(parseInt(parts[2], 10), parseInt(parts[0], 10) - 1, parseInt(parts[1], 10));
     } else {
       dateObj = new Date(dateStr);
     }
@@ -277,11 +352,12 @@
     if (!user) return;
 
     const name = user.name || 'Employee';
-    const role = (user.role || 'employee').toUpperCase();
-    const position = user.position || 'Specialist';
+    const isHR = user.role === 'hr';
+    const role = isHR ? 'HR ADMIN' : 'EMPLOYEE';
+    const position = user.position || (isHR ? 'HR Manager' : 'Specialist');
     const email = user.email || '';
     const phone = user.phone || 'N/A';
-    const dept = user.department || 'General';
+    const dept = user.department || (isHR ? 'Human Resources' : 'General');
     const formattedDate = formatJoiningDate(user.joiningDate);
     const resolvedAvatar = resolveImagePath(user.profilePicture, name);
 
@@ -297,29 +373,24 @@
     if (cardJoiningDate) cardJoiningDate.textContent = formattedDate;
 
     // Badges
-    if (cardRoleBadge) cardRoleBadge.textContent = role;
-    if (navRoleText) navRoleText.textContent = role;
-    if (navRoleBadge) {
-      if (role === 'HR') {
-        navRoleBadge.classList.add('hr');
-      } else {
-        navRoleBadge.classList.remove('hr');
-      }
+    if (cardRoleBadge) {
+      cardRoleBadge.textContent = role;
+      cardRoleBadge.classList.toggle('hr', isHR);
     }
+    if (navRoleText) navRoleText.textContent = isHR ? 'HR Admin' : 'Employee';
+    if (navRoleBadge) navRoleBadge.classList.toggle('hr', isHR);
 
     // Avatar Images
-    if (cardProfileImg) {
-      cardProfileImg.src = resolvedAvatar;
-      cardProfileImg.alt = `Profile photo of ${name}`;
-    }
-    if (photoPreviewImg) {
-      photoPreviewImg.src = resolvedAvatar;
-      photoPreviewImg.alt = `Photo preview of ${name}`;
-    }
-    if (navAvatarImg) {
-      navAvatarImg.src = resolvedAvatar;
-      navAvatarImg.alt = `Avatar of ${name}`;
-    }
+    [
+      { el: cardProfileImg, alt: `Profile photo of ${name}` },
+      { el: photoPreviewImg, alt: `Photo preview of ${name}` },
+      { el: navAvatarImg, alt: `Avatar of ${name}` }
+    ].forEach(({ el, alt }) => {
+      if (el) {
+        el.src = resolvedAvatar;
+        el.alt = alt;
+      }
+    });
 
     // Navigation Dropdown
     if (navUserName) navUserName.textContent = name;
@@ -333,14 +404,28 @@
     if (editPositionInput) editPositionInput.value = user.position || '';
     if (editEmailInput) editEmailInput.value = user.email || '';
     if (editPhoneInput) editPhoneInput.value = user.phone || '';
-    if (editDepartmentInput) editDepartmentInput.value = user.department || 'Finance';
+    if (editDepartmentInput) editDepartmentInput.value = user.department || (user.role === 'hr' ? 'Human Resources' : 'Finance');
   }
 
   // ============================================================================
-  // 4. DIRTY TRACKING ENGINE
+  // 5. DIRTY TRACKING ENGINE
   // ============================================================================
   function isFormDirty() {
+    const isHR = currentUser?.role === 'hr';
     const currentPhone = editPhoneInput ? editPhoneInput.value.trim() : '';
+    const currentName = editNameInput ? editNameInput.value.trim() : '';
+    const currentPosition = editPositionInput ? editPositionInput.value.trim() : '';
+    const currentDept = editDepartmentInput ? editDepartmentInput.value.trim() : '';
+
+    if (isHR) {
+      return (
+        currentName !== savedState.name ||
+        currentPosition !== savedState.position ||
+        currentDept !== savedState.department ||
+        currentPhone !== savedState.phone ||
+        stagedAvatar !== savedState.avatar
+      );
+    }
 
     return (
       currentPhone !== savedState.phone ||
@@ -350,21 +435,14 @@
 
   function updateDirtyState() {
     const dirty = isFormDirty();
-
     if (saveChangesBtn) saveChangesBtn.disabled = !dirty;
 
     if (unsavedBadge && savedBadge) {
-      if (dirty) {
-        unsavedBadge.classList.remove('d-none');
-        savedBadge.classList.add('d-none');
-      } else {
-        unsavedBadge.classList.add('d-none');
-        savedBadge.classList.remove('d-none');
-      }
+      unsavedBadge.classList.toggle('d-none', !dirty);
+      savedBadge.classList.toggle('d-none', dirty);
     }
   }
 
-  // Warn user before navigating away with unsaved edits
   window.addEventListener('beforeunload', (e) => {
     if (isFormDirty()) {
       e.preventDefault();
@@ -373,8 +451,25 @@
   });
 
   // ============================================================================
-  // 5. INPUT EVENT BINDINGS & LIVE MIRRORING
+  // 6. INPUT EVENT BINDINGS & LIVE MIRRORING
   // ============================================================================
+  function validatePhone(showError = true) {
+    const val = editPhoneInput ? editPhoneInput.value.trim() : '';
+    const phonePattern = /^[\d\s+\-().]{7,20}$/;
+    const isValid = Boolean(val && phonePattern.test(val));
+
+    if (editPhoneInput && phoneError) {
+      if (!isValid && showError) {
+        editPhoneInput.classList.add('is-invalid');
+        phoneError.classList.add('active');
+      } else if (isValid) {
+        editPhoneInput.classList.remove('is-invalid');
+        phoneError.classList.remove('active');
+      }
+    }
+    return isValid;
+  }
+
   if (editPhoneInput) {
     editPhoneInput.addEventListener('input', () => {
       validatePhone(false);
@@ -384,30 +479,52 @@
     editPhoneInput.addEventListener('blur', () => validatePhone(true));
   }
 
-  // ============================================================================
-  // 6. FORM VALIDATION
-  // ============================================================================
-  function validatePhone(showError = true) {
-    const val = editPhoneInput ? editPhoneInput.value.trim() : '';
-    // Accepts 7 to 20 chars consisting of digits, spaces, hyphens, plus, parentheses
-    const phonePattern = /^[\d\s+\-().]{7,20}$/;
-    if (!val || !phonePattern.test(val)) {
-      if (showError && editPhoneInput && phoneError) {
-        editPhoneInput.classList.add('is-invalid');
-        phoneError.classList.add('active');
-      }
-      return false;
-    }
-    if (editPhoneInput && phoneError) {
-      editPhoneInput.classList.remove('is-invalid');
-      phoneError.classList.remove('active');
-    }
-    return true;
+  // Live mirroring for editable HR fields
+  if (editNameInput) {
+    editNameInput.addEventListener('input', () => {
+      const val = editNameInput.value.trim() || 'Employee';
+      if (cardFullName) cardFullName.textContent = val;
+      if (navUserName) navUserName.textContent = val;
+      if (navDropdownName) navDropdownName.textContent = val;
+      updateDirtyState();
+    });
+  }
+
+  if (editPositionInput) {
+    editPositionInput.addEventListener('input', () => {
+      if (cardPosition) cardPosition.textContent = editPositionInput.value.trim() || 'Specialist';
+      updateDirtyState();
+    });
+  }
+
+  if (editDepartmentInput) {
+    editDepartmentInput.addEventListener('input', () => {
+      if (cardDepartment) cardDepartment.textContent = editDepartmentInput.value.trim() || 'General';
+      updateDirtyState();
+    });
   }
 
   function validateAllFormFields() {
-    const isPhoneValid = validatePhone(true);
-    if (!isPhoneValid) {
+    const isHR = currentUser?.role === 'hr';
+    if (isHR) {
+      if (editNameInput && !editNameInput.value.trim()) {
+        editNameInput.focus();
+        showStatusAlert('Full Name cannot be empty.', 'danger');
+        return false;
+      }
+      if (editPositionInput && !editPositionInput.value.trim()) {
+        editPositionInput.focus();
+        showStatusAlert('Job Title cannot be empty.', 'danger');
+        return false;
+      }
+      if (editDepartmentInput && !editDepartmentInput.value.trim()) {
+        editDepartmentInput.focus();
+        showStatusAlert('Department cannot be empty.', 'danger');
+        return false;
+      }
+    }
+
+    if (!validatePhone(true)) {
       editPhoneInput?.focus();
       return false;
     }
@@ -417,18 +534,12 @@
   // ============================================================================
   // 7. PHOTO MANAGEMENT & DOWNSCALING ENGINE
   // ============================================================================
-  /**
-   * Validates image format and size (max 2 MB), center-crops to square and
-   * downscales to 256x256 via canvas to save compact Data URLs.
-   */
   function downscaleImage(file, maxSize = 256) {
     return new Promise((resolve, reject) => {
       const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
       if (!validTypes.includes(file.type.toLowerCase())) {
         return reject(new Error('Invalid image format. Please select a PNG, JPG, or GIF file.'));
       }
-
-      // 2 MB Size Limit (2 * 1024 * 1024)
       if (file.size > 2 * 1024 * 1024) {
         return reject(new Error('Image file exceeds 2 MB. Please select a smaller photo.'));
       }
@@ -444,14 +555,12 @@
           canvas.height = maxSize;
           const ctx = canvas.getContext('2d');
 
-          // Center crop calculation
           const minDim = Math.min(img.width, img.height);
           const startX = (img.width - minDim) / 2;
           const startY = (img.height - minDim) / 2;
 
           ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, maxSize, maxSize);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
-          resolve(dataUrl);
+          resolve(canvas.toDataURL('image/jpeg', 0.88));
         };
         img.src = event.target.result;
       };
@@ -481,7 +590,6 @@
     }
   }
 
-  // Handle file upload
   if (imageFileInput) {
     imageFileInput.addEventListener('change', async (e) => {
       const file = e.target.files[0];
@@ -501,96 +609,69 @@
   // ============================================================================
   // 8. SAVE CHANGES & LOCAL STORAGE PERSISTENCE
   // ============================================================================
+  function syncCollectionInStorage(storageKey, updatedRecord) {
+    const raw = localStorage.getItem(storageKey);
+    if (!raw) return;
+    try {
+      const list = JSON.parse(raw);
+      if (Array.isArray(list)) {
+        const idx = list.findIndex(u => u.id === updatedRecord.id || (u.email && u.email.toLowerCase() === updatedRecord.email.toLowerCase()));
+        if (idx !== -1) {
+          list[idx] = { ...list[idx], ...updatedRecord };
+          localStorage.setItem(storageKey, JSON.stringify(list));
+        }
+      }
+    } catch (_) {}
+  }
+
   if (profileEditForm) {
     profileEditForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      if (!validateAllFormFields()) {
-        return;
-      }
+      if (!validateAllFormFields() || !isFormDirty()) return;
 
-      if (!isFormDirty()) {
-        return;
-      }
-
-      // Enter loading state on Save button
       const originalSaveHtml = saveChangesBtn.innerHTML;
       saveChangesBtn.disabled = true;
       saveChangesBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1.5" role="status" aria-hidden="true"></span><span>Saving...</span>';
 
-      // Brief animation buffer for responsive feel
-      await new Promise((r) => setTimeout(r, 350));
+      await new Promise(r => setTimeout(r, 350));
 
-      // Construct payload: Full Name, Job Title, Email, and Department are strictly read-only and preserved
+      const isHR = currentUser?.role === 'hr';
       const updatedUser = {
         ...currentUser,
-        name: currentUser.name,
-        position: currentUser.position,
-        phone: editPhoneInput.value.trim(),
+        name: isHR && editNameInput ? editNameInput.value.trim() : currentUser.name,
+        position: isHR && editPositionInput ? editPositionInput.value.trim() : currentUser.position,
+        department: isHR && editDepartmentInput ? editDepartmentInput.value.trim() : (currentUser.department || 'Finance'),
+        phone: editPhoneInput ? editPhoneInput.value.trim() : (currentUser.phone || ''),
         profilePicture: stagedAvatar,
-        department: currentUser.department || 'Finance',
         email: currentUser.email
       };
 
       try {
-        // 1. Update session in localStorage
         localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        syncCollectionInStorage('users', updatedUser);
+        syncCollectionInStorage('employees', updatedUser);
 
-        // 2. Synchronize Users list if stored in localStorage
-        const usersRaw = localStorage.getItem('users');
-        if (usersRaw) {
-          try {
-            const users = JSON.parse(usersRaw);
-            if (Array.isArray(users)) {
-              const idx = users.findIndex(u => u.id === updatedUser.id || (u.email && u.email.toLowerCase() === updatedUser.email.toLowerCase()));
-              if (idx !== -1) {
-                users[idx] = { ...users[idx], ...updatedUser };
-                localStorage.setItem('users', JSON.stringify(users));
-              }
-            }
-          } catch (_) {}
-        }
-
-        // 3. Synchronize Employees list if stored in localStorage
-        const empsRaw = localStorage.getItem('employees');
-        if (empsRaw) {
-          try {
-            const emps = JSON.parse(empsRaw);
-            if (Array.isArray(emps)) {
-              const idx = emps.findIndex(u => u.id === updatedUser.id || (u.email && u.email.toLowerCase() === updatedUser.email.toLowerCase()));
-              if (idx !== -1) {
-                emps[idx] = { ...emps[idx], ...updatedUser };
-                localStorage.setItem('employees', JSON.stringify(emps));
-              }
-            }
-          } catch (_) {}
-        }
-
-        // 4. Update in-memory state & baseline
         currentUser = updatedUser;
         savedState = {
+          name: updatedUser.name,
+          position: updatedUser.position,
+          department: updatedUser.department,
           phone: updatedUser.phone,
           avatar: stagedAvatar
         };
 
-        // 5. Update UI
         renderProfileToDOM(updatedUser);
         updateDirtyState();
 
-        // 6. Broadcast event across tabs/windows
         window.dispatchEvent(new Event('storage'));
         window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: updatedUser }));
-
-        // 7. Show success feedback
         showStatusAlert('Profile changes saved successfully.', 'success');
 
       } catch (storageErr) {
         console.error('Save error:', storageErr);
-        if (storageErr.name === 'QuotaExceededError' || storageErr.code === 22 || storageErr.code === 1014) {
-          showStatusAlert('Storage quota exceeded. Please choose a smaller photo.', 'danger');
-        } else {
-          showStatusAlert('Failed to save profile changes. Please try again.', 'danger');
-        }
+        const isQuota = storageErr.name === 'QuotaExceededError' || storageErr.code === 22 || storageErr.code === 1014;
+        showStatusAlert(isQuota ? 'Storage quota exceeded. Please choose a smaller photo.' : 'Failed to save profile changes. Please try again.', 'danger');
       } finally {
         saveChangesBtn.innerHTML = originalSaveHtml;
         updateDirtyState();
@@ -600,7 +681,6 @@
 
   function showStatusAlert(msg, type = 'success') {
     if (!statusAlert || !statusAlertText) return;
-
     statusAlertText.textContent = msg;
     statusAlert.className = `profile-alert-banner alert-${type}`;
 
@@ -610,10 +690,7 @@
 
     statusAlert.classList.remove('d-none');
     statusAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    setTimeout(() => {
-      dismissStatusAlert();
-    }, 5000);
+    setTimeout(dismissStatusAlert, 5000);
   }
 
   function dismissStatusAlert() {
@@ -625,23 +702,31 @@
   }
 
   // ============================================================================
-  // 9. LOCAL PASSWORD RESET ENGINE (8+ ALPHANUMERIC + SPECIAL CHAR REGEX)
+  // 9. PASSWORD TOGGLES & RESET ENGINE
   // ============================================================================
-  // Show / Hide password toggles
-  if (toggleNewPasswordBtn && newPasswordInput && toggleNewPasswordIcon) {
-    toggleNewPasswordBtn.addEventListener('click', () => {
-      const isText = newPasswordInput.type === 'text';
-      newPasswordInput.type = isText ? 'password' : 'text';
-      toggleNewPasswordIcon.className = isText ? 'bi bi-eye' : 'bi bi-eye-slash';
+  function setupPasswordToggle(btn, input, icon) {
+    if (!btn || !input || !icon) return;
+    btn.addEventListener('click', () => {
+      const isText = input.type === 'text';
+      input.type = isText ? 'password' : 'text';
+      icon.className = isText ? 'bi bi-eye' : 'bi bi-eye-slash';
     });
   }
 
-  if (toggleConfirmPasswordBtn && confirmPasswordInput && toggleConfirmPasswordIcon) {
-    toggleConfirmPasswordBtn.addEventListener('click', () => {
-      const isText = confirmPasswordInput.type === 'text';
-      confirmPasswordInput.type = isText ? 'password' : 'text';
-      toggleConfirmPasswordIcon.className = isText ? 'bi bi-eye' : 'bi bi-eye-slash';
-    });
+  setupPasswordToggle(toggleNewPasswordBtn, newPasswordInput, toggleNewPasswordIcon);
+  setupPasswordToggle(toggleConfirmPasswordBtn, confirmPasswordInput, toggleConfirmPasswordIcon);
+
+  function setFieldValidation(input, errorEl, message = '') {
+    if (!input || !errorEl) return;
+    if (message) {
+      input.classList.add('is-invalid');
+      errorEl.textContent = message;
+      errorEl.classList.add('active');
+    } else {
+      input.classList.remove('is-invalid');
+      errorEl.textContent = '';
+      errorEl.classList.remove('active');
+    }
   }
 
   if (passwordResetForm) {
@@ -650,70 +735,47 @@
 
       const newPass = newPasswordInput ? newPasswordInput.value : '';
       const confirmPass = confirmPasswordInput ? confirmPasswordInput.value : '';
-
       let hasError = false;
 
-      // Regex: At least 8 characters, containing letters or numbers, and at least one special character
+      // 8+ alphanumeric and special character regex
       const passwordRegex = /^(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,}$/;
 
       if (!newPass || !passwordRegex.test(newPass)) {
-        if (newPasswordInput && newPasswordError) {
-          newPasswordInput.classList.add('is-invalid');
-          newPasswordError.textContent = 'Password must be at least 8 characters long with letters/numbers and at least one special character.';
-          newPasswordError.classList.add('active');
-        }
+        setFieldValidation(newPasswordInput, newPasswordError, 'Password must be at least 8 characters long with letters/numbers and at least one special character.');
         hasError = true;
       } else {
-        if (newPasswordInput && newPasswordError) {
-          newPasswordInput.classList.remove('is-invalid');
-          newPasswordError.classList.remove('active');
-        }
+        setFieldValidation(newPasswordInput, newPasswordError);
       }
 
-      // Validate Confirm Password
       if (!confirmPass || confirmPass !== newPass) {
-        if (confirmPasswordInput && confirmPasswordError) {
-          confirmPasswordInput.classList.add('is-invalid');
-          confirmPasswordError.textContent = 'Passwords do not match.';
-          confirmPasswordError.classList.add('active');
-        }
+        setFieldValidation(confirmPasswordInput, confirmPasswordError, 'Passwords do not match.');
         hasError = true;
       } else {
-        if (confirmPasswordInput && confirmPasswordError) {
-          confirmPasswordInput.classList.remove('is-invalid');
-          confirmPasswordError.classList.remove('active');
-        }
+        setFieldValidation(confirmPasswordInput, confirmPasswordError);
       }
 
       if (hasError) {
-        if (!newPass || !passwordRegex.test(newPass)) {
-          newPasswordInput?.focus();
-        } else {
-          confirmPasswordInput?.focus();
-        }
+        (!newPass || !passwordRegex.test(newPass) ? newPasswordInput : confirmPasswordInput)?.focus();
         return;
       }
 
-      // Save new password in localStorage user_passwords map & currentUser
       try {
-        const userEmailKey = (currentUser.email || '').toLowerCase();
+        const userEmailKey = (currentUser?.email || '').toLowerCase();
         const userPasswords = JSON.parse(localStorage.getItem('user_passwords') || '{}');
         userPasswords[userEmailKey] = newPass;
         localStorage.setItem('user_passwords', JSON.stringify(userPasswords));
 
-        currentUser.password = newPass;
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        if (currentUser) {
+          currentUser.password = newPass;
+          localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
 
-        // Feedback
         if (passwordStatusAlert && passwordStatusText) {
           passwordStatusText.textContent = 'Password reset successfully. Your new password has been saved for portal sign-in.';
           passwordStatusAlert.classList.remove('d-none');
-          setTimeout(() => {
-            passwordStatusAlert.classList.add('d-none');
-          }, 4500);
+          setTimeout(() => passwordStatusAlert.classList.add('d-none'), 4500);
         }
 
-        // Clear password inputs
         if (newPasswordInput) newPasswordInput.value = '';
         if (confirmPasswordInput) confirmPasswordInput.value = '';
 
@@ -724,7 +786,7 @@
   }
 
   // ============================================================================
-  // 10. AUTHENTICATED NAVBAR & LOGOUT HANDLER
+  // 10. LOGOUT HANDLER & LIFECYCLE
   // ============================================================================
   if (navLogoutBtn) {
     navLogoutBtn.addEventListener('click', () => {
@@ -734,7 +796,6 @@
     });
   }
 
-  // Initialize on DOMContentLoaded
   document.addEventListener('DOMContentLoaded', initProfile);
 
 })();

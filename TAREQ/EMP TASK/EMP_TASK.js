@@ -1,8 +1,10 @@
 // EMP_TASK.js
 // CoreLink Employee Task Management
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-let currentEmployeeId = currentUser.id;
+let currentUser =
+JSON.parse(localStorage.getItem("currentUser"));
+let currentEmployeeId =
+Number(currentUser.id);
 let selectedTaskId = null;
 loadTasks();
 updateEmployeeDashboard();
@@ -14,16 +16,23 @@ function loadTasks(){
 displayTasks();
 }
 
-function getMyTasks(){ 
- 
-return tasks.filter(task => 
+function getMyTasks(){
+
+return tasks.filter(task =>
+
+    Array.isArray(task.assignedEmployees) &&
+
     task.assignedEmployees.some(
+
         id => Number(id) === Number(currentEmployeeId)
-    )
+
+    ) &&
+
+    task.status !== "Blocked"
+
 );
 
 }
-
 function loadEmployeeFilters(){
 
     let taskFilter =document.getElementById("employeeTaskFilter");

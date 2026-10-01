@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Meetings</title>
+    <link rel="stylesheet" href="HRMeetings.css">
+</head>
+<body>
+
+<div class="page">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <p class="eyebrow">HR MANAGEMENT</p>
+            <h1>Meetings</h1>
+            <p class="subtitle">Schedule meetings, review requests, and track employee responses.</p>
+        </div>
+
+        <button class="add-button" onclick="showMeetingForm()">
+            <span>+</span> Schedule Meeting
+        </button>
+    </div>
+
+    <!-- Meeting Requests -->
+    <section class="section">
+        <div class="section-header">
+            <div>
+                <h2>Meeting Requests</h2>
+                <p>Requests sent by employees for HR review.</p>
+            </div>
+        </div>
+
+        <div id="meetingRequests" class="cards-container"></div>
+    </section>
+
+    <!-- Scheduled Meetings -->
+    <section class="section">
+        <div class="section-header">
+            <div>
+                <h2>Scheduled Meetings</h2>
+                <p>Upcoming meetings and accepted employee requests.</p>
+            </div>
+        </div>
+
+        <div id="meetingsContainer" class="cards-container"></div>
+    </section>
+
+</div>
+
+
+<!-- Add / Edit Meeting Modal -->
+<div id="meetingFormContainer" class="modal" hidden>
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <div>
+                <h2 id="formTitle">Schedule Meeting</h2>
+                <p>Enter the meeting details below.</p>
+            </div>
+            <button class="close-button" type="button" onclick="hideMeetingForm()">&times;</button>
+        </div>
+
+        <form id="meetingForm">
+            <div class="form-group">
+                <label for="meetingTitle">Meeting Title</label>
+                <input id="meetingTitle" type="text" placeholder="Example: Monthly Check-in" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="meetingDate">Date</label>
+                    <input id="meetingDate" type="date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="meetingTime">Time</label>
+                    <input id="meetingTime" type="time" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Participants</label>
+
+                <div class="participants-dropdown">
+                    <button id="participantsButton" class="participants-button" type="button" onclick="toggleParticipantsDropdown()">
+                        <span id="participantsText">Select participants</span>
+                        <span>▾</span>
+                    </button>
+
+                    <div id="participantsMenu" class="participants-menu" hidden>
+                        <label class="participant-option all-option">
+                            <input id="selectAllEmployees" type="checkbox">
+                            <span>All Employees</span>
+                        </label>
+
+                        <div class="dropdown-section">
+                            <p class="dropdown-title">Departments</p>
+                            <div id="departmentsCheckboxes"></div>
+                        </div>
+
+                        <div class="dropdown-section">
+                            <p class="dropdown-title">Employees</p>
+                            <div id="employeesCheckboxes"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="meetingNotes">Notes</label>
+                <textarea id="meetingNotes" placeholder="Add meeting notes..."></textarea>
+            </div>
+
+            <div class="form-buttons">
+                <button class="cancel-button" type="button" onclick="hideMeetingForm()">Cancel</button>
+                <button id="saveMeetingButton" class="save-button" type="submit">Schedule Meeting</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+<!-- View Meeting Modal -->
+<div id="viewMeetingModal" class="modal" hidden>
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <div>
+                <h2 id="viewMeetingTitle">Meeting Details</h2>
+                <p>Meeting information and participant responses.</p>
+            </div>
+            <button class="close-button" type="button" onclick="closeMeetingView()">&times;</button>
+        </div>
+
+        <div class="view-grid">
+            <div class="view-item">
+                <span>Date</span>
+                <strong id="viewMeetingDate">-</strong>
+            </div>
+            <div class="view-item">
+                <span>Time</span>
+                <strong id="viewMeetingTime">-</strong>
+            </div>
+        </div>
+
+        <div class="view-section">
+            <h3>Notes</h3>
+            <p id="viewMeetingNotes">-</p>
+        </div>
+
+        <div class="view-section">
+            <h3>Participants</h3>
+            <div id="viewMeetingParticipants"></div>
+        </div>
+
+        <div class="view-section">
+            <h3>Employee Responses</h3>
+            <div id="viewMeetingResponses"></div>
+        </div>
+
+        <div class="view-buttons">
+            <button class="cancel-button" type="button" onclick="closeMeetingView()">Close</button>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Employee Request Modal -->
+<div id="viewRequestModal" class="modal" hidden>
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <div>
+                <h2 id="viewRequestTitle">Meeting Request</h2>
+                <p>Review the employee request and send a response.</p>
+            </div>
+            <button class="close-button" type="button" onclick="closeRequestView()">&times;</button>
+        </div>
+
+        <div class="view-grid">
+            <div class="view-item">
+                <span>Requested By</span>
+                <strong id="viewRequestEmployee">-</strong>
+            </div>
+            <div class="view-item">
+                <span>Status</span>
+                <strong id="viewRequestStatus">Pending</strong>
+            </div>
+            <div class="view-item">
+                <span>Date</span>
+                <strong id="viewRequestDate">-</strong>
+            </div>
+            <div class="view-item">
+                <span>Time</span>
+                <strong id="viewRequestTime">-</strong>
+            </div>
+        </div>
+
+        <div class="view-section">
+            <h3>Notes</h3>
+            <p id="viewRequestNotes">-</p>
+        </div>
+
+        <div class="form-group">
+            <label for="requestResponseMessage">Message to Employee</label>
+            <textarea id="requestResponseMessage" placeholder="Write a message to the employee..."></textarea>
+        </div>
+
+        <div class="request-actions">
+            <button class="reject-button" type="button" onclick="respondToCurrentRequest('Rejected')">Reject</button>
+            <button class="accept-button" type="button" onclick="respondToCurrentRequest('Accepted')">Accept</button>
+        </div>
+
+    </div>
+</div>
+
+<script src="HRMeetings.js"></script>
+</body>
+</html>

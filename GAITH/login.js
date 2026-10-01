@@ -1218,7 +1218,26 @@
         }
 
         // Target dashboard / profile destination
-        const destination = (matchedUser.role === 'hr') ? 'profile/profile.html' : 'profile/profile.html';
+// ============================================
+// REDIRECT AFTER SUCCESSFUL LOGIN
+// ============================================
+
+let destination;
+
+if (matchedUser.role === "hr") {
+
+    destination = "hrdashboard/hrdashboard.html";
+
+}
+else if (matchedUser.role === "employee") {
+
+    destination = "home/home.html";
+
+}
+
+window.location.href = destination;
+
+
 
         // Redirect after brief feedback animation (1.2s)
         setTimeout(() => {

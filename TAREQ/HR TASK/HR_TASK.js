@@ -113,10 +113,6 @@ assignedEmployees:[Number(empId)],
 
 employeeId:Number(empId),
 
-
-employeeId:empId,
-
-
 employeeName: employee ? employee.name : "Unknown",
 
 
