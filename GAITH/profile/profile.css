@@ -437,6 +437,18 @@ input, button, select, textarea {
   border: 1px solid var(--light-gray);
 }
 
+.badge-field-status.badge-editable {
+  background-color: var(--warning-light);
+  color: var(--warning);
+  border-color: var(--warning-border);
+}
+
+.profile-input.is-editable-field {
+  background-color: var(--white) !important;
+  color: var(--text-dark) !important;
+  cursor: text !important;
+}
+
 /* Input Icon Wrapper for In-Field Lock Badges and Buttons */
 .input-icon-wrap {
   position: relative;

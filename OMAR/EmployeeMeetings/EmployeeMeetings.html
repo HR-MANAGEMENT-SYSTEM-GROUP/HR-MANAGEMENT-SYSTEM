@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Meetings</title>
+    <link rel="stylesheet" href="EmployeeMeetings.css">
+</head>
+<body>
+
+<div class="page">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <p class="eyebrow">EMPLOYEE PORTAL</p>
+            <h1>My Meetings</h1>
+            <p class="subtitle">View invitations, confirmed meetings, and your requests.</p>
+        </div>
+
+        <button class="request-button" onclick="showRequestForm()">
+            <span>+</span> Request Meeting
+        </button>
+    </div>
+
+    <!-- Meeting Invitations -->
+    <section class="section">
+        <div class="section-header">
+            <div>
+                <h2>Meeting Invitations</h2>
+                <p>Meetings assigned to you by HR.</p>
+            </div>
+            <span class="section-badge">Action Needed</span>
+        </div>
+
+        <div id="invitationsContainer" class="cards-container"></div>
+    </section>
+
+    <!-- Upcoming Meetings -->
+    <section class="section">
+        <div class="section-header">
+            <div>
+                <h2>Upcoming Meetings</h2>
+                <p>Your confirmed meetings.</p>
+            </div>
+        </div>
+
+        <div id="upcomingMeetingsContainer" class="cards-container"></div>
+    </section>
+
+    <!-- My Requests -->
+    <section class="section">
+        <div class="section-header">
+            <div>
+                <h2>My Meeting Requests</h2>
+                <p>Requests you sent to the HR Manager.</p>
+            </div>
+        </div>
+
+        <div id="myRequestsContainer" class="cards-container"></div>
+    </section>
+
+</div>
+
+
+<!-- Request Meeting Modal -->
+<div id="requestFormContainer" class="modal" hidden>
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <div>
+                <h2>Request Meeting</h2>
+                <p>Send a meeting request to the HR Manager.</p>
+            </div>
+            <button class="close-button" type="button" onclick="hideRequestForm()">&times;</button>
+        </div>
+
+        <form id="requestMeetingForm">
+            <div class="form-group">
+                <label for="hrManager">Meeting With</label>
+                <input id="hrManager" type="text" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="requestTitle">Meeting Title</label>
+                <input id="requestTitle" type="text" placeholder="Example: Schedule Discussion" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="requestDate">Preferred Date</label>
+                    <input id="requestDate" type="date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="requestTime">Preferred Time</label>
+                    <input id="requestTime" type="time" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="requestNotes">Notes</label>
+                <textarea id="requestNotes" placeholder="Why would you like to schedule this meeting?"></textarea>
+            </div>
+
+            <div class="form-buttons">
+                <button class="cancel-button" type="button" onclick="hideRequestForm()">Cancel</button>
+                <button class="save-button" type="submit">Send Request</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script src="EmployeeMeetings.js"></script>
+</body>
+</html>

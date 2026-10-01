@@ -1218,7 +1218,9 @@
         }
 
         // Target dashboard / profile destination
-        const destination = (matchedUser.role === 'hr') ? 'profile/profile.html' : 'profile/profile.html';
+        const destination = (matchedUser.role === 'hr')
+  ? '../NADA/hrdashboard/hrdashboard.html'
+  : '../NADA/home/home.html';
 
         // Redirect after brief feedback animation (1.2s)
         setTimeout(() => {

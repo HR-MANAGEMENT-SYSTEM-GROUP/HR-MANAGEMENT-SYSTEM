@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meet the Team — HR Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quantico:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="home.css">
+  <style>
+  .team-page {
+  min-height: 100vh;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 24px 60px;
+}
+
+/* العنوان */
+.team-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.team-title {
+  font-family: var(--hero-font);
+  font-size: clamp(2rem, 4.5vw, 2.8rem);
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 10px;
+}
+
+.team-title-line {
+  width: 44px;
+  height: 4px;
+  background: var(--primary);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+.team-subtitle {
+  font-size: 1rem;
+  color: var(--text-gray);
+  margin: 0;
+}
+
+
+.team-grid {
+  width: 100%;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.team-card {
+  position: relative;
+  background: linear-gradient(145deg, #ffffff, #f3f6fa);
+  border-radius: 20px;
+  padding: 80px 20px 40px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  overflow: hidden;
+}
+
+
+.team-card:hover {
+  transform: translateY(-10px) scale(1.04);
+  box-shadow: 0 25px 45px rgba(0, 121, 241, 0.25);
+}
+
+
+.team-badge {
+  position: relative;
+  margin: 0 auto 20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0079F1, #00C6FF);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(0, 121, 241, 0.4);
+  animation: pulse 2.5s infinite;
+}
+
+
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0,121,241,0.4); }
+  50% { transform: scale(1.08); box-shadow: 0 0 0 20px rgba(0,121,241,0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0,121,241,0); }
+}
+
+
+.team-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 6px;
+  transition: color 0.3s ease;
+}
+
+.team-card:hover .team-name {
+  color: #0079F1;
+}
+
+
+.team-role {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+
+.team-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0,121,241,0.15), transparent 70%);
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.team-card:hover::before {
+  opacity: 1;
+}
+
+
+.team-card {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.team-card:nth-child(1) { animation-delay: 0.1s; }
+.team-card:nth-child(2) { animation-delay: 0.2s; }
+.team-card:nth-child(3) { animation-delay: 0.3s; }
+.team-card:nth-child(4) { animation-delay: 0.4s; }
+.team-card:nth-child(5) { animation-delay: 0.5s; }
+.team-card:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .team-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 500px) {
+  .team-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+
+<!-- NAVBAR -->
+  <header class="journey-header">
+    <a href="#stop-0" class="journey-logo" data-jump="0" aria-label="Masar — home">
+      <svg class="masar-lockup" viewBox="0 0 332.6 56" role="img" aria-label="Masar" focusable="false"><g transform="scale(0.875)"><rect class="ml-tile" width="64" height="64" rx="16"/><g transform="translate(0 -2.4)"><path class="ml-m" d="M14 48V17L32 38L50 17V48" fill="none" stroke-width="6.6" stroke-linecap="round" stroke-linejoin="round"/><circle class="ml-hollow" cx="14" cy="48" r="5" stroke="#0079F1" stroke-width="3"/><circle cx="50" cy="48" r="7.6" fill="#0079F1"/><circle cx="50" cy="48" r="2.7" fill="#fff"/></g></g><g transform="translate(81.3 6)"><g class="ml-word" fill="none" stroke-width="6.6" stroke-linecap="round" stroke-linejoin="round"><path d="M0 44V0L21 27L42 0V44"/><path transform="translate(56 0)" d="M0 44L21 0L42 44M6.2 31H35.8"/><path transform="translate(112 0)" d="M30 9C27 3.4 22 0 16.4 0C8 0 2.6 4.6 2.6 11.2C2.6 18.6 9.4 20.8 16 22.4C23.4 24.2 30 26.4 30 33.4C30 40 24.4 44 16.2 44C9.6 44 4.2 41 1.4 35"/><path transform="translate(158 0)" d="M0 44L21 0L42 44M6.2 31H35.8"/><path transform="translate(214 0)" d="M0 44V0H18A12.5 12.5 0 0 1 18 25H0M17 25L33 44"/></g></g></svg>
+    </a>
+    <nav class="journey-nav-menu" aria-label="Main">
+      <a href="#stop-0" class="nav-menu-link" data-jump="0">Home</a>
+      <a href="#stop-1" class="nav-menu-link" data-jump="1">About us</a>
+      <a href="#stop-2" class="nav-menu-link" data-jump="2">Services</a>
+      <a href="#stop-4" class="nav-menu-link" data-jump="4">Contact us</a>
+    </nav>
+    <div class="header-actions">
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch to dark theme" title="Switch theme">
+        <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <span class="theme-label" id="themeLabel">Dark</span>
+      </button>
+
+      <div class="nav-auth" id="navAuth">
+  <a href="../../GAITH/login.html" class="header-btn">Login <span aria-hidden="true">&rarr;</span></a>
+</div>
+<div class="nav-auth hidden" id="navUser">
+  <a href="../../GAITH/profile/profile.html" class="nav-menu-link">Profile</a>
+  <span class="username">Name: <span id="userName">Nada</span></span>
+  <a href="../../GAITH/login.html" class="header-btn">Logout</a>
+</div>
+    </div>
+  </header>
+
+  <nav class="journey-side-nav" id="sideNav" aria-label="Page progress"></nav>
+  <div class="journey-next-hint" id="hint" aria-hidden="true"></div>
+
+  <div class="journey-stage">
+    <div class="journey-bg-grid" aria-hidden="true"></div>
+
+    <!-- Background "video": the platform builds itself, on a timed loop -->
+    <div class="software-assembly" id="softwareAssembly" aria-hidden="true">
+      <div class="sa-card">
+        <div class="sa-head"><span class="sa-status"></span><span class="sa-phase" id="saPhase">Sketching the structure</span><span class="sa-right"><span class="sa-step" id="saStep">Step 1 of 5</span><span class="sa-tag" id="saTag">Built by Masar</span></span></div>
+        <div class="sa-stage"><svg class="sa-svg" viewBox="0 0 240 180" preserveAspectRatio="xMidYMid meet" focusable="false"><defs><pattern id="saGrid" width="12" height="12" patternUnits="userSpaceOnUse"><path class="sa-gridline" d="M12 0H0V12"/></pattern></defs><rect width="240" height="180" fill="url(#saGrid)"/><path class="sa-mark" d="M3 11V3H11M229 3H237V11M237 169V177H229M11 177H3V169"/><g data-kind="dim" data-win="0.88,1"><path class="sa-line" d="M112 90H84V40H60" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" opacity="0" data-kind="draw" data-win="0.1,0.26"/><path class="sa-line" d="M128 90H156V40H180" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" opacity="0" data-kind="draw" data-win="0.12,0.28"/><path class="sa-line" d="M112 90H84V140H60" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" opacity="0" data-kind="draw" data-win="0.14,0.3"/><path class="sa-line" d="M128 90H156V140H180" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" opacity="0" data-kind="draw" data-win="0.16,0.32"/><g data-kind="fade" data-win="0.06,0.2" opacity="0"><rect class="sa-mod" x="8" y="30" width="52" height="20" rx="3"/><text class="sa-lab" x="14" y="39.4">Leave</text><rect class="sa-bar-g" x="14" y="41" width="34" height="2.2" rx="1.1"/></g><g data-kind="fade" data-win="0.09,0.23" opacity="0"><rect class="sa-mod" x="180" y="30" width="52" height="20" rx="3"/><text class="sa-lab" x="186" y="39.4">Staff</text><rect class="sa-bar-g" x="186" y="41" width="34" height="2.2" rx="1.1"/></g><g data-kind="fade" data-win="0.12,0.26" opacity="0"><rect class="sa-mod" x="8" y="130" width="52" height="20" rx="3"/><text class="sa-lab" x="14" y="139.4">Policies</text><rect class="sa-bar-g" x="14" y="141" width="34" height="2.2" rx="1.1"/></g><g data-kind="fade" data-win="0.15,0.29" opacity="0"><rect class="sa-mod" x="180" y="130" width="52" height="20" rx="3"/><text class="sa-lab" x="186" y="139.4">Tasks</text><rect class="sa-bar-g" x="186" y="141" width="34" height="2.2" rx="1.1"/></g><g data-kind="fade" data-win="0.26,0.34" opacity="0"><rect class="sa-comp" x="8" y="58" width="52" height="14" rx="2"/><rect class="sa-bar-g" x="13" y="63" width="26" height="2" rx="1"/></g><g data-kind="fade" data-win="0.29,0.37" opacity="0"><rect class="sa-comp-b" x="8" y="78" width="24" height="8" rx="4"/></g><g data-kind="fade" data-win="0.32,0.4" opacity="0"><rect class="sa-comp" x="180" y="58" width="52" height="14" rx="2"/><rect class="sa-bar-g" x="185" y="63" width="26" height="2" rx="1"/></g><g data-kind="fade" data-win="0.35,0.43" opacity="0"><rect class="sa-comp-b" x="208" y="78" width="24" height="8" rx="4"/></g><g data-kind="fade" data-win="0.38,0.46" opacity="0"><rect class="sa-comp" x="8" y="110" width="52" height="10" rx="2"/></g><g data-kind="fade" data-win="0.41,0.49" opacity="0"><rect class="sa-comp" x="180" y="110" width="52" height="10" rx="2"/></g><path id="saArcTop" class="sa-line" d="M34 30C34 8 206 8 206 30" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" opacity="0" data-kind="draw" data-win="0.5,0.66"/><path id="saArcBot" class="sa-line" d="M34 150C34 172 206 172 206 150" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" opacity="0" data-kind="draw" data-win="0.54,0.7"/><g data-kind="fade" data-win="0.62,0.72" opacity="0"><circle class="sa-node" cx="120" cy="13.5" r="2.2"/><circle class="sa-node" cx="120" cy="166.5" r="2.2"/><circle class="sa-node" cx="34" cy="30" r="2.2"/><circle class="sa-node" cx="206" cy="30" r="2.2"/><circle class="sa-node" cx="34" cy="150" r="2.2"/><circle class="sa-node" cx="206" cy="150" r="2.2"/></g><circle class="sa-pulse" r="1.8" opacity="0" data-kind="pulse" data-path="saArcTop" data-win="0.70,0.92"/><circle class="sa-pulse" r="1.8" opacity="0" data-kind="pulse" data-path="saArcBot" data-win="0.74,0.96"/><g data-kind="fade" data-win="0.66,0.8" opacity="0"><text class="sa-code" x="10" y="101">{ }</text><rect class="sa-bar-b" x="182" y="88" width="30" height="2" rx="1"/><rect class="sa-bar-g" x="182" y="93" width="20" height="2" rx="1"/><rect class="sa-bar-g" x="182" y="98" width="26" height="2" rx="1"/></g><g data-kind="fade" data-win="0.72,0.84" opacity="0"><circle class="sa-dot" cx="84" cy="40" r="1.8"/><circle class="sa-dot" cx="156" cy="40" r="1.8"/><circle class="sa-dot" cx="84" cy="140" r="1.8"/><circle class="sa-dot" cx="156" cy="140" r="1.8"/></g></g><rect class="sa-core" x="112" y="82" width="16" height="16" rx="3"/><circle class="sa-dot" cx="120" cy="90" r="2.2"/><g data-kind="pop" data-win="0.84,1" opacity="0"><rect class="sa-win" x="66" y="46" width="108" height="88" rx="5"/><path class="sa-top" d="M66 58V51a5 5 0 0 1 5-5H169a5 5 0 0 1 5 5V58Z"/><circle class="sa-dot" cx="73" cy="52" r="1.6"/><circle class="sa-dotg" cx="79" cy="52" r="1.6"/><circle class="sa-dotg" cx="85" cy="52" r="1.6"/><rect class="sa-side" x="66.5" y="58" width="21.5" height="75.5"/><rect class="sa-bar-b" x="71" y="64" width="12" height="3" rx="1.5"/><rect class="sa-bar-g" x="71" y="71" width="12" height="3" rx="1.5"/><rect class="sa-bar-g" x="71" y="78" width="12" height="3" rx="1.5"/><rect class="sa-ink" x="96" y="64" width="44" height="4" rx="2"/><rect class="sa-bar-g" x="96" y="72" width="66" height="2.5" rx="1.25"/><rect class="sa-comp-b" x="96" y="82" width="32" height="22" rx="3"/><rect class="sa-comp-b" x="134" y="82" width="32" height="22" rx="3"/><polyline class="sa-chart" points="100,99 106,93 112,96 122,88"/><rect class="sa-btn" x="96" y="112" width="26" height="8" rx="4"/></g></svg></div>
+        <div class="sa-foot"><div class="sa-segs"><span class="sa-seg"><i><b></b></i><em>Structure</em></span><span class="sa-seg"><i><b></b></i><em>Components</em></span><span class="sa-seg"><i><b></b></i><em>Data</em></span><span class="sa-seg"><i><b></b></i><em>Logic</em></span><span class="sa-seg"><i><b></b></i><em>Launch</em></span></div></div>
+      </div>
+    </div>
+
+    <div class="journey-world" id="world">
+      <svg class="journey-road-svg" viewBox="0 0 2000 3800" aria-hidden="true">
+        <path id="roadPath" fill="none" d="M 1000 400 C 1250 650, 1600 850, 1450 1150 C 1300 1450, 900 1600, 650 1900 C 400 2200, 1000 2350, 1350 2650 C 1700 2950, 1250 3150, 1000 3400"/>
+        <g id="nodes"></g>
+      </svg>
+      <div class="traveler" id="traveler"><span></span></div>
+    </div>
+
+    <svg class="connector" aria-hidden="true">
+      <path id="cLine" d=""/><circle id="pipA" r="3.5"/><circle id="pipB" r="3.5"/>
+    </svg>
+
+    
+
+    <main id="main-content" class="journey-stops">
+
+
+
+  <main class="team-page">
+    <div class="team-header">
+      <h1 class="team-title">Meet the Team</h1>
+      <div class="team-title-line" aria-hidden="true"></div>
+      <p class="team-subtitle">The people behind the platform</p>
+    </div>
+
+    <div class="team-grid">
+      <!-- Member 1 -->
+      <div class="team-card">
+        <div class="team-badge">NA</div>
+        <h3 class="team-name">Nada Alawneh</h3>
+        <p class="team-role">Full Stack Developer</p>
+      </div>
+
+      <!-- Member 2 -->
+      <div class="team-card">
+        <div class="team-badge">AH</div>
+        <h3 class="team-name">Amneh Hazaimeh</h3>
+        <p class="team-role">Full Stack Developer</p>
+      </div>
+
+      <!-- Member 3 -->
+      <div class="team-card">
+        <div class="team-badge">YJ</div>
+        <h3 class="team-name">Yaqeen Jawabreh</h3>
+        <p class="team-role">Full Stack Developer</p>
+      </div>
+
+      <!-- Member 4 -->
+      <div class="team-card">
+        <div class="team-badge">TB</div>
+        <h3 class="team-name">Tareq Bataineh</h3>
+        <p class="team-role">Full Stack Developer</p>
+      </div>
+
+       <!-- Member 5 -->
+      <div class="team-card">
+        <div class="team-badge">OS</div>
+        <h3 class="team-name">Omar Smadi</h3>
+        <p class="team-role">Full Stack Developer</p>
+      </div>
+
+       <!-- Member 6 -->
+      <div class="team-card">
+        <div class="team-badge">GA</div>
+        <h3 class="team-name">Gaith Amourah</h3>
+        <p class="team-role">Full Stack Developer</p>
+      </div>
+    </div>
+
+   <a href="home.html" class="back-home">← Back to Home</a>
+
+  </main>
+
+
+  
+  <!-- 5. CONTACT / FOOTER -->
+      <section class="stop-panel pos-center" id="stop-4" data-name="Contact" inert aria-label="Contact">
+        <div class="foot-grid">
+          <div>
+            <a href="#stop-0" data-jump="0" aria-label="Masar — back to start">
+            <img src="MASAR.png" alt="Masar" class="foot-logo">
+            </a>
+
+            <p>Empowering people and simplifying HR for modern teams.</p>
+            <div class="socials">
+  <a href="https://www.facebook.com/login" target="_blank">Facebook</a>
+  <a href="https://www.instagram.com/accounts/login/" target="_blank">Instagram</a>
+  <a href="https://x.com/i/flow/login" target="_blank">X</a>
+</div>
+
+          </div>
+          <div>
+            <h3>Quick Links</h3>
+            <ul class="plain">
+              <li><a href="#stop-0" data-jump="0">Home</a></li>
+              <li><a href="#stop-1" data-jump="1">About</a></li>
+              <li><a href="#stop-2" data-jump="2">Services</a></li>
+              <li><a href="../../YAQEEN/companyPolicies/companyPolicies.html">Policies</a></li>
+              <li><a href="team.html" class="accent">Meet the Team &nearr;</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Contact</h3>
+            <ul class="plain">
+              <li><a href="mailto:hr@company.com">hr@company.com</a></li>
+              <li><a href="tel:+96265550123">+962 6 555 0123</a></li>
+              <li>King Abdullah St, Amman</li>
+              <li>Sun&ndash;Thu, 9:00&ndash;17:00</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Find Us</h3>
+            <div class="map">
+              <iframe title="Office Location Map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                src="https://maps.google.com/maps?q=King%20Abdullah%20St,%20Amman,%20Jordan&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=&amp;output=embed"></iframe>
+              <a href="https://maps.google.com/?q=King+Abdullah+St,+Amman,+Jordan" target="_blank" rel="noopener">Open Maps &nearr;</a>
+            </div>
+          </div>
+        </div>
+        <div class="foot-bottom">
+          <span>&copy; <span id="yr">2026</span> Masar. All rights reserved.</span>
+          <button type="button" class="link-btn" data-jump="0">&larr; Back to start</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="journey-spacer" id="spacer" aria-hidden="true"></div>
+</div>
+</body>
+</html>
